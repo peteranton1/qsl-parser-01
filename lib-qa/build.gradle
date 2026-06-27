@@ -3,18 +3,30 @@ plugins {
 }
 
 group = 'org.example'
-version = 'unspecified'
+version = '0.1.0'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:6.0.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation project(':lib')
+    // Cucumber Dependencies
+    testImplementation("io.cucumber:cucumber-java:${cucumberVersion}")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:${cucumberVersion}")
+//    testImplementation("io.cucumber:cucumber-picocontainer:${cucumberVersion}")
+
+    // Junit Dependencies
+//    testImplementation("org.junit:junit-bom:${junitJupiterVersion}")
+    testImplementation("org.junit.platform:junit-platform-suite:${junitJupiterVersion}")
+    testImplementation("org.junit.jupiter:junit-jupiter:${junitJupiterVersion}")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:${junitJupiterVersion}")
 }
 
 test {
     useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
