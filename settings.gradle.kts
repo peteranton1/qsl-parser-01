@@ -13,3 +13,5 @@ plugins {
 
 rootProject.name = "qsl-parser-01"
 include("lib")
+
+include("lib-qa")
