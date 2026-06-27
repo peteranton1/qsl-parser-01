@@ -3,9 +3,11 @@ package com.qsl.parser.lex;
 import java.util.regex.Pattern;
 
 public enum TokTyp {
-    IDENT("\\b[a-zA-Z_$][a-zA-Z0-9_$]*\\b"),
+    // keywords first
     EXEC("^exec"),
     VAR("^var"),
+    // identifiers and rest of tokens
+    IDENT("\\b[a-zA-Z_$][a-zA-Z0-9_$]*\\b"),
     NUMBER("^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?"),
     STRING("^\"([^\\\\\\\"]|\\\\.)*\""),
     LBRACE("^\\{"),
