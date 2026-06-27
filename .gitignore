@@ -1,3 +1,6 @@
+# intellij
+.idea/
+
 # Compiled class file
 *.class
 
@@ -28,3 +31,6 @@ replay_pid*
 
 # Ignore Gradle build output directory
 build
+
+# Ignore Kotlin plugin data
+.kotlin
