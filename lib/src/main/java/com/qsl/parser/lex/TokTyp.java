@@ -1,29 +1,32 @@
 package com.qsl.parser.lex;
 
-public enum TokTyp {
-    IDENT("^[a-zA-Z_$][\\w$]*$"),
-    NUMBER("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?"),
-    STRING("\"([^\\\\\\\"]|\\\\.)*\""),
-    LBRACE("\\{"),
-    RBRACE("}"),
-    LBRACKET("\\["),
-    RBRACKET("]"),
-    LPAREN("\\("),
-    RPAREN("\\)"),
-    COMMA(","),
-    DOT("."),
-    SEMICOLON(";"),
-    VAR("var"),
-    EXEC("exec"),
-    EOF("EOF");
+import java.util.regex.Pattern;
 
-    private final String regex;
+public enum TokTyp {
+    IDENT("\\b[a-zA-Z_$][a-zA-Z0-9_$]*\\b"),
+    EXEC("^exec"),
+    VAR("^var"),
+    NUMBER("^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?"),
+    STRING("^\"([^\\\\\\\"]|\\\\.)*\""),
+    LBRACE("^\\{"),
+    RBRACE("^}"),
+    LBRACKET("^\\["),
+    RBRACKET("^]"),
+    LPAREN("^\\("),
+    RPAREN("^\\)"),
+    COMMA("^,"),
+    DOT("^."),
+    SEMICOLON("^;"),
+    WHITESPACE("^[ \t\r\n]+"),
+    EOF("^\\|EOF\\|");
+
+    private final Pattern pattern;
 
     TokTyp(String regex) {
-        this.regex = regex;
+        this.pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
     }
 
-    public String getRegex() {
-        return regex;
+    public Pattern getPattern() {
+        return pattern;
     }
 }

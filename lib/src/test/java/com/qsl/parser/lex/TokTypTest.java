@@ -13,29 +13,54 @@ class TokTypTest {
 
     public static Stream<Arguments> allTokTypeArgs() {
         return Stream.of(
-            Arguments.of(TokTyp.IDENT,"a123_def"),
-            Arguments.of(TokTyp.NUMBER,"12.34"),
-            Arguments.of(TokTyp.STRING,"\"some string \""),
-            Arguments.of(TokTyp.LBRACE, "{"),
-            Arguments.of(TokTyp.RBRACE, "}"),
-            Arguments.of(TokTyp.LBRACKET, "["),
-            Arguments.of(TokTyp.RBRACKET, "]"),
-            Arguments.of(TokTyp.LPAREN, "("),
-            Arguments.of(TokTyp.RPAREN, ")"),
-            Arguments.of(TokTyp.COMMA, ","),
-            Arguments.of(TokTyp.DOT, "."),
-            Arguments.of(TokTyp.SEMICOLON, ";"),
-            Arguments.of(TokTyp.VAR, "var"),
-            Arguments.of(TokTyp.EXEC, "exec"),
-            Arguments.of(TokTyp.EOF, "EOF")
+            Arguments.of(TokTyp.IDENT,
+                "a123_def","a123_def {12\n    34.2"),
+            Arguments.of(TokTyp.IDENT,
+                "a","a "),
+            Arguments.of(TokTyp.EXEC,
+                "exec", "exec 12\n    34.2"),
+            Arguments.of(TokTyp.VAR,
+                "var", "var 12\n    34.2"),
+            Arguments.of(TokTyp.NUMBER,
+                "12.34","12.34 12\n    34.2"),
+            Arguments.of(TokTyp.NUMBER,
+                "+12","+12 .34 12\n    34.2"),
+            Arguments.of(TokTyp.STRING,
+                "\"some string \"","\"some string \" 12\n    34.2"),
+            Arguments.of(TokTyp.LBRACE,
+                "{", "{ 12\n    34.2"),
+            Arguments.of(TokTyp.RBRACE,
+                "}", "} 12\n    34.2"),
+            Arguments.of(TokTyp.LBRACKET,
+                "[", "[ 12\n    34.2"),
+            Arguments.of(TokTyp.RBRACKET,
+                "]", "] 12\n    34.2"),
+            Arguments.of(TokTyp.LPAREN,
+                "(", "( 12\n    34.2"),
+            Arguments.of(TokTyp.RPAREN,
+                ")", ") 12\n    34.2"),
+            Arguments.of(TokTyp.COMMA,
+                ",", ", 12\n    34.2"),
+            Arguments.of(TokTyp.DOT,
+                ".", ". 12\n    34.2"),
+            Arguments.of(TokTyp.SEMICOLON,
+                ";", "; 12\n    34.2"),
+            Arguments.of(TokTyp.WHITESPACE,
+                "    \n", "    \n12\n    34.2"),
+            Arguments.of(TokTyp.EOF,
+                "|EOF|", "|EOF| 12\n    34.2")
         );
     }
 
     @ParameterizedTest
     @MethodSource("allTokTypeArgs")
-    void shouldParseAllStringsAsTrue(TokTyp tokTyp, String input) {
-        Pattern pattern = Pattern.compile(tokTyp.getRegex());
+    void shouldParseAllStringsAsTrue(TokTyp tokTyp, String expected, String input) {
+        Pattern pattern = tokTyp.getPattern();
         Matcher matcher = pattern.matcher(input);
         assertTrue(matcher.find());
+        System.out.println("  - Found \"" + matcher.group() +
+            "\" at position: " + matcher.start());
+        assertEquals(0, matcher.start());
+        assertEquals(expected, matcher.group());
     }
 }
