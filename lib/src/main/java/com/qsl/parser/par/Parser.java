@@ -20,36 +20,11 @@ public class Parser {
 
     private final Lexer lexer;
 
-    private Token peek() {
-        return lexer.nextToken();
-    }
-
-    private Token expect(List<TokTyp> typList) {
-        Token tok = peek();
-        if (!typList.contains(tok.toktyp())) {
-            throw handleError(tok);
-        }
-        return tok;
-    }
-
-    private void eat() {
-        lexer.scanToken();
-    }
-
-    private boolean notInList(Token tok, List<TokTyp> typList) {
-        for(TokTyp tokTyp : typList) {
-            if(tok.toktyp().equals(tokTyp)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public TreeNode prog() {
         return stmts();
     }
 
-    public TreeNode stmts() {
+    private TreeNode stmts() {
         log.debug("stmts: ");
         List<TokTyp> stmtTypes = List.of(
             TokTyp.EXEC, TokTyp.VAR,
@@ -65,7 +40,7 @@ public class Parser {
         return new MultiNode(tok, list);
     }
 
-    public TreeNode stmt() {
+    private TreeNode stmt() {
         log.debug("stmt: ");
         List<TokTyp> stmtTypes = List.of(TokTyp.EXEC, TokTyp.VAR);
         Token tok = expect(stmtTypes);
@@ -76,7 +51,7 @@ public class Parser {
         };
     }
 
-    public TreeNode varStmt() {
+    private TreeNode varStmt() {
         eat();
         Token identTok = expect(List.of(TokTyp.IDENT));
         eat();
@@ -99,24 +74,28 @@ public class Parser {
             .build();
     }
 
-    public TreeNode varClause() {
+    private TreeNode varClause() {
         List<TokTyp> typList = List.of(TokTyp.QT, TokTyp.ANS);
         Token clauseTok = expect(typList);
         log.debug("varClause: {}", clauseTok);
         eat();
         if(TokTyp.QT.equals(clauseTok.toktyp())) {
             Token stringTok = expect(List.of(TokTyp.STRING));
-            eat();
-            return PrefixNode.builder()
-                .token(clauseTok)
-                .arg(TerminalNode.builder()
-                    .token(stringTok).build())
-                .build();
+            return stringExpr(clauseTok, stringTok);
         } else if(TokTyp.ANS.equals(clauseTok.toktyp())) {
             Token charTok = expect(List.of(TokTyp.CHAR));
             return charExpr(charTok);
         }
         throw handleError(clauseTok);
+    }
+
+    private TreeNode stringExpr(Token clauseTok, Token stringTok) {
+        eat();
+        return MultiNode.builder()
+            .token(clauseTok)
+            .children(List.of(TerminalNode.builder()
+                .token(stringTok).build()))
+            .build();
     }
 
     private TreeNode charExpr(Token charTok) {
@@ -168,5 +147,26 @@ public class Parser {
             tok, tok.pos());
         log.error(msg);
         return new ParseException(msg);
+    }
+
+    private Token expect(List<TokTyp> typList) {
+        Token tok = lexer.nextToken();
+        if (!typList.contains(tok.toktyp())) {
+            throw handleError(tok);
+        }
+        return tok;
+    }
+
+    private void eat() {
+        lexer.scanToken();
+    }
+
+    private boolean notInList(Token tok, List<TokTyp> typList) {
+        for(TokTyp tokTyp : typList) {
+            if(tok.toktyp().equals(tokTyp)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

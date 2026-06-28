@@ -48,19 +48,6 @@ public class ParserRunner {
             indentStr = " ".repeat(indent);
         }
         switch (root) {
-            case InfixNode infix -> sb
-                .append(indentStr)
-                .append(infix.getToken())
-                .append("\n")
-                .append(toStringTreeNode(infix.getLeft(), indent + 1))
-                .append(toStringTreeNode(infix.getRight(), indent + 1))
-            ;
-            case PrefixNode prefix -> sb
-                .append(indentStr)
-                .append(prefix.getToken())
-                .append("\n")
-                .append(toStringTreeNode(prefix.getArg(), indent + 1))
-            ;
             case MultiNode multi -> {
                 sb
                     .append(indentStr)
