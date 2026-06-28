@@ -4,14 +4,12 @@ Feature: Parse Various inputs
   Given I parse the following content:
   """
       Hello,
-      This is the first line of my comment.
-      Here is the second line of my comment.
-      Thank you!
+      This exec VAR %
       """
   When I submit the content to the parser
   Then I should see compiles to the following:
     """
-      Some output
+    [IDENT:Hello] [COMMA:,] [IDENT:This] [EXEC:exec] [VAR:VAR] [UNKNOWN:%] [EOF:\[EOF\]]
     """
 
 

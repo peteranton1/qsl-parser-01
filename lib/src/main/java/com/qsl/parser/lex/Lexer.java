@@ -3,12 +3,35 @@ package com.qsl.parser.lex;
 public class Lexer {
     private final StringReader reader;
 
+    private Token currentToken;
+    private Token nextToken;
+
     public Lexer(String input) {
         this.reader = new StringReader(input);
+        this.currentToken = null;
+        this.nextToken = nonWhitespaceToken();
     }
 
-    public Token readToken() {
-        // placeholder
-        return new Token(TokTyp.EOF, "EOF", reader.getPos());
+    public Token nextToken() {
+        if (nextToken == null) {
+            nextToken = reader.getEofToken();
+        }
+        currentToken = nextToken;
+        nextToken = nonWhitespaceToken();
+        return currentToken;
     }
+
+    public Token peekToken() {
+        return nextToken;
+    }
+
+    private Token nonWhitespaceToken() {
+        Token token = reader.nextToken();
+        while (token != null &&
+            TokTyp.WHITESPACE.equals(token.toktyp())) {
+            token = reader.nextToken();
+        }
+        return token;
+    }
+
 }

@@ -1,6 +1,6 @@
 package com.qsl.parser.lex;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -8,30 +8,30 @@ import static org.junit.jupiter.api.Assertions.*;
 class StringReaderTest {
 
     @Test
-    void nextChar_shouldCall_len_Times() {
-        String testString = """
-            This is a\s
-             \
-            1234\s
-             \r test string""";
+    void nextToken_shouldCall_len_Times() {
+        String testString = "This XZ a \n1234\n test string";
         StringReader underTest = new StringReader(testString);
 
-        char EOF = '\0';
-        char currentChar = EOF;
-        char nextChar = EOF;
+        assertTokTyp(underTest, TokTyp.IDENT, "X01");
+        assertTokTyp(underTest, TokTyp.WHITESPACE, "X02");
+        assertTokTyp(underTest, TokTyp.IDENT, "X03");
+        assertTokTyp(underTest, TokTyp.WHITESPACE, "X04");
+        assertTokTyp(underTest, TokTyp.IDENT, "X05");
+        assertTokTyp(underTest, TokTyp.WHITESPACE, "X06");
+        assertTokTyp(underTest, TokTyp.NUMBER, "X07");
+        assertTokTyp(underTest, TokTyp.WHITESPACE, "X08");
+        assertTokTyp(underTest, TokTyp.IDENT, "X09");
+        assertTokTyp(underTest, TokTyp.WHITESPACE, "X10");
+        assertTokTyp(underTest, TokTyp.IDENT, "X11");
+        assertTokTyp(underTest, TokTyp.EOF, "X12");
+        assertTokTyp(underTest, TokTyp.EOF, "X13");
 
-        for (int i = 0; i < testString.length(); i++) {
-            if(i < testString.length()-1) {
-                nextChar = testString.charAt(i+1);
-            } else {
-                nextChar = EOF;
-            }
-            currentChar = testString.charAt(i);
-            assertEquals(nextChar, underTest.peekChar());
-            assertEquals(currentChar, underTest.nextChar());
-        }
-        assertEquals(EOF, underTest.peekChar());
-        assertEquals(EOF, underTest.nextChar());
+    }
+
+    private static void assertTokTyp(StringReader underTest, TokTyp tokTyp, String msg) {
+        Token token = underTest.nextToken();
+        System.out.println(token);
+        Assertions.assertEquals(tokTyp, token.toktyp(), msg);
     }
 
     @Test
@@ -39,9 +39,10 @@ class StringReaderTest {
         String testString = "abc\ndef";
         StringReader underTest = new StringReader(testString);
 
-        for (int i = 0; i < testString.length(); i++) {
-            underTest.nextChar();
-        }
+        underTest.nextToken();
+        underTest.nextToken();
+        underTest.nextToken();
+
         Pos expected = new Pos(7,2,3);
         assertEquals(expected, underTest.getPos());
     }

@@ -1,39 +1,86 @@
 package com.qsl.parser.lex;
 
+import org.jspecify.annotations.NonNull;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class StringReader {
 
     private final String input;
+    private final StringBuilder buffer;
     private int pos;
     private int line;
     private int col;
 
     public StringReader(String input) {
         this.input = input;
+        this.buffer = new StringBuilder(input);
         this.pos = 0;
         this.line = 1;
         this.col = 0;
     }
 
-    public char nextChar() {
-        if (pos >= input.length()) {
-            return '\0';
+    private void skip(int step) {
+        for (int i = 0; i < step; i++) {
+            if (pos >= input.length()) {
+                return;
+            }
+            buffer.deleteCharAt(0);
+            char c = input.charAt(pos);
+            pos++;
+            if (c == '\n') {
+                line++;
+                col = 0;
+            } else {
+                col++;
+            }
         }
-        char c = input.charAt(pos);
-        pos++;
-        if (c == '\n') {
-            line++;
-            col = 0;
-        } else {
-            col++;
-        }
-        return c;
     }
 
-    public char peekChar() {
-        if (pos >= input.length()-1) {
-            return '\0';
+    public Token nextToken() {
+        if (buffer.isEmpty()) {
+            return getEofToken();
         }
-        return input.charAt(pos + 1);
+        for (TokTyp tokTyp : TokTyp.values()) {
+            if (TokTyp.EOF == tokTyp ||
+                TokTyp.UNKNOWN == tokTyp) {
+                break;
+            }
+            Pattern pattern = tokTyp.getPattern();
+            Matcher matcher = pattern.matcher(buffer);
+            if (matcher.find() && matcher.start() == 0) {
+                String literal = matcher.group();
+                Token token = new Token(tokTyp,
+                    literal,
+                    getPos());
+                skip(literal.length());
+                return token;
+            }
+        }
+        if (pos < input.length()) {
+            Token unknownToken = getUnknownToken();
+            skip(1);
+            return unknownToken;
+        }
+
+        return getEofToken();
+    }
+
+    public @NonNull Token getUnknownToken() {
+        int posEnd = 20;
+        if(buffer.length() < posEnd) {
+            posEnd = buffer.length();
+        }
+        return new Token(TokTyp.UNKNOWN,
+            buffer.substring(0, posEnd),
+            getPos());
+    }
+
+    public @NonNull Token getEofToken() {
+        return new Token(TokTyp.EOF,
+            TokTyp.EOF.getPattern().pattern(),
+            getPos());
     }
 
     public Pos getPos() {

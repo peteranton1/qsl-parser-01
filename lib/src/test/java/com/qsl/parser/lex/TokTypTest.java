@@ -46,9 +46,7 @@ class TokTypTest {
             Arguments.of(TokTyp.SEMICOLON,
                 ";", "; 12\n    34.2"),
             Arguments.of(TokTyp.WHITESPACE,
-                "    \n", "    \n12\n    34.2"),
-            Arguments.of(TokTyp.EOF,
-                "|EOF|", "|EOF| 12\n    34.2")
+                "    \n", "    \n12\n    34.2")
         );
     }
 
@@ -57,7 +55,9 @@ class TokTypTest {
     void shouldParseAllStringsAsTrue(TokTyp tokTyp, String expected, String input) {
         Pattern pattern = tokTyp.getPattern();
         Matcher matcher = pattern.matcher(input);
-        assertTrue(matcher.find());
+        assertTrue(matcher.find(),
+            "Unmatched string: " + input +
+                ", pattern " + pattern);
         System.out.println("  - Found \"" + matcher.group() +
             "\" at position: " + matcher.start());
         assertEquals(0, matcher.start());

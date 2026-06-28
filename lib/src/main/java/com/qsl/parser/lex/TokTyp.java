@@ -8,19 +8,20 @@ public enum TokTyp {
     VAR("^var"),
     // identifiers and rest of tokens
     IDENT("\\b[a-zA-Z_$][a-zA-Z0-9_$]*\\b"),
-    NUMBER("^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?"),
-    STRING("^\"([^\\\\\\\"]|\\\\.)*\""),
-    LBRACE("^\\{"),
-    RBRACE("^}"),
-    LBRACKET("^\\["),
-    RBRACKET("^]"),
-    LPAREN("^\\("),
-    RPAREN("^\\)"),
-    COMMA("^,"),
-    DOT("^."),
-    SEMICOLON("^;"),
+    NUMBER("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?"),
+    STRING("\"([^\\\\\\\"]|\\\\.)*\""),
+    LBRACE("\\{"),
+    RBRACE("}"),
+    LBRACKET("\\["),
+    RBRACKET("]"),
+    LPAREN("\\("),
+    RPAREN("\\)"),
+    COMMA(","),
+    DOT("\\."),
+    SEMICOLON(";"),
     WHITESPACE("^[ \t\r\n]+"),
-    EOF("^\\|EOF\\|");
+    UNKNOWN("UNKNOWN"),
+    EOF("\\[EOF\\]");
 
     private final Pattern pattern;
 

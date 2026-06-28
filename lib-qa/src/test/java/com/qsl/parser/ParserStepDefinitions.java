@@ -24,8 +24,8 @@ public class ParserStepDefinitions {
 
     @When("I submit the content to the parser")
     public void iSubmitTheContentToTheParser() {
-        world.actual = underTest.runParser(world.content);
         world.log("iSubmitTheContentToTheParser " + ++world.dummyInt);
+        world.actual = underTest.runParser(world.content);
     }
 
     @Then("I should see compiles to the following:")
@@ -34,6 +34,6 @@ public class ParserStepDefinitions {
         world.log("iShouldSeeCompilesToTheFollowing " + ++world.dummyInt);
         world.log("Actual:\n " + world.actual);
         world.log("Expected:\n " + world.expected);
-        Assertions.assertTrue(true);
+        Assertions.assertEquals(expected, world.actual);
     }
 }
