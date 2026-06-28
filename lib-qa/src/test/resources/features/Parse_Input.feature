@@ -3,13 +3,21 @@ Feature: Parse Various inputs
   Scenario: Parse simple input
   Given I parse the following content:
   """
-      Hello,
-      This exec VAR %
+      var q1 {
+        qt "Some Text"
+        ans char(50)
+      }
       """
   When I submit the content to the parser
   Then I should see compiles to the following:
     """
-    [IDENT:Hello] [COMMA:,] [IDENT:This] [EXEC:exec] [VAR:VAR] [UNKNOWN:%] [EOF:\[EOF\]]
+     [EOF:\[EOF\]]
+      [IDENT:q1]
+       [QT:qt]
+        [STRING:"Some Text"]
+       [CHAR:char]
+        [NUMBER:50]
+
     """
 
 

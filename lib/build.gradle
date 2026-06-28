@@ -10,10 +10,15 @@ repositories {
 }
 
 dependencies {
-    implementation project(':lib')
-    // Cucumber Dependencies
-    testImplementation("io.cucumber:cucumber-java:${cucumberVersion}")
-    testImplementation("io.cucumber:cucumber-junit-platform-engine:${cucumberVersion}")
+    compileOnly("org.projectlombok:lombok:${lombokVersion}")
+    annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+
+    testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
+    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+
+    // logback & slf4j
+    implementation("org.slf4j:slf4j-api:${slf4jVersion}")
+    implementation("ch.qos.logback:logback-classic:${logbackVersion}")
 
     // Junit Dependencies
     testImplementation("org.junit.platform:junit-platform-suite:${junitJupiterVersion}")
@@ -28,3 +33,4 @@ test {
         events "passed", "skipped", "failed"
     }
 }
+

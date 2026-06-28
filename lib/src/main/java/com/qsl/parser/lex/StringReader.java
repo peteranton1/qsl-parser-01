@@ -1,7 +1,5 @@
 package com.qsl.parser.lex;
 
-import org.jspecify.annotations.NonNull;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,9 +65,9 @@ public class StringReader {
         return getEofToken();
     }
 
-    public @NonNull Token getUnknownToken() {
+    public Token getUnknownToken() {
         int posEnd = 20;
-        if(buffer.length() < posEnd) {
+        if (buffer.length() < posEnd) {
             posEnd = buffer.length();
         }
         return new Token(TokTyp.UNKNOWN,
@@ -77,7 +75,7 @@ public class StringReader {
             getPos());
     }
 
-    public @NonNull Token getEofToken() {
+    public Token getEofToken() {
         return new Token(TokTyp.EOF,
             TokTyp.EOF.getPattern().pattern(),
             getPos());

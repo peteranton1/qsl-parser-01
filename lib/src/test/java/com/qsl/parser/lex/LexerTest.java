@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 class LexerTest {
 
     @Test
-    void nextToken() {
+    void scanToken_shouldScanToken() {
         String input = "var abc 12    \n bananas { } ! hello";
         Lexer underTest = new Lexer(input);
         checkToken(underTest, TokTyp.VAR, "Y01");
@@ -24,15 +24,12 @@ class LexerTest {
     }
 
     private static void checkToken(Lexer underTest, TokTyp tokTyp, String msg) {
-        Token peektoken = underTest.peekToken();
+        Token peektoken = underTest.nextToken();
         Assertions.assertNotNull(peektoken);
         Assertions.assertEquals(tokTyp, peektoken.toktyp(), msg);
-        Token token = underTest.nextToken();
+        Token token = underTest.scanToken();
         Assertions.assertNotNull(token);
         Assertions.assertEquals(tokTyp, token.toktyp(), msg);
     }
 
-    @Test
-    void peekToken() {
-    }
 }

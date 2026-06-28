@@ -1,11 +1,17 @@
 package com.qsl.parser.lex;
 
+import lombok.Getter;
+
 import java.util.regex.Pattern;
 
+@Getter
 public enum TokTyp {
     // keywords first
-    EXEC("^exec"),
-    VAR("^var"),
+    ANS("ans"),
+    EXEC("exec"),
+    CHAR("char"),
+    QT("qt"),
+    VAR("var"),
     // identifiers and rest of tokens
     IDENT("\\b[a-zA-Z_$][a-zA-Z0-9_$]*\\b"),
     NUMBER("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?"),
@@ -29,7 +35,4 @@ public enum TokTyp {
         this.pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
     }
 
-    public Pattern getPattern() {
-        return pattern;
-    }
 }

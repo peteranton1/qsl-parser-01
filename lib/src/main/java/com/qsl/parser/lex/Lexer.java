@@ -12,7 +12,7 @@ public class Lexer {
         this.nextToken = nonWhitespaceToken();
     }
 
-    public Token nextToken() {
+    public Token scanToken() {
         if (nextToken == null) {
             nextToken = reader.getEofToken();
         }
@@ -21,7 +21,7 @@ public class Lexer {
         return currentToken;
     }
 
-    public Token peekToken() {
+    public Token nextToken() {
         return nextToken;
     }
 
