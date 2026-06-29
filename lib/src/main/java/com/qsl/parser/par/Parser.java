@@ -4,7 +4,6 @@ import com.qsl.parser.lex.Lexer;
 import com.qsl.parser.lex.TokTyp;
 import com.qsl.parser.lex.Token;
 import com.qsl.parser.tree.MultiNode;
-import com.qsl.parser.tree.TerminalNode;
 import com.qsl.parser.tree.TreeNode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

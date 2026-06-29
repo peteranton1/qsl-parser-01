@@ -14,8 +14,11 @@ import java.util.List;
 @Slf4j
 public class ParseVarStmt extends ParseBase {
 
+    private final ParseArithExpr parseArithExpr;
+
     public ParseVarStmt(Lexer lexer) {
         super(lexer);
+        this.parseArithExpr = new ParseArithExpr(lexer);
     }
 
     public TreeNode varStmt() {
@@ -64,26 +67,7 @@ public class ParseVarStmt extends ParseBase {
     }
 
     private TreeNode compExpr(Token compTok) {
-        expect(List.of(TokTyp.LPAREN));
-        eat();
-        List<TokTyp> typList = List.of(TokTyp.RPAREN,
-            TokTyp.IDENT, TokTyp.NUMBER,
-            TokTyp.MULT, TokTyp.DIV,
-            TokTyp.PLUS, TokTyp.MINUS);
-        List<TreeNode> children = new ArrayList<>();
-        Token tok = expect(typList);
-        while (notInList(tok, List.of(TokTyp.RPAREN))) {
-            eat();
-            children.add(TerminalNode.builder()
-                .token(tok)
-                .build());
-            tok = expect(typList);
-        }
-        eat();
-        return MultiNode.builder()
-            .token(compTok)
-            .children(children)
-            .build();
+        return parseArithExpr.arithExpr(compTok);
     }
 
     private TreeNode stringExpr(Token clauseTok, Token stringTok) {
