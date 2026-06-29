@@ -8,8 +8,9 @@ import java.util.regex.Pattern;
 public enum TokTyp {
     // keywords first
     ANS("ans"),
-    EXEC("exec"),
     CHAR("char"),
+    COMP("comp"),
+    EXEC("exec"),
     QT("qt"),
     VAR("var"),
     // identifiers and rest of tokens
@@ -24,6 +25,10 @@ public enum TokTyp {
     RPAREN("\\)"),
     COMMA(","),
     DOT("\\."),
+    MULT("\\*"),
+    DIV("/"),
+    PLUS("\\+"),
+    MINUS("-"),
     SEMICOLON(";"),
     WHITESPACE("^[ \t\r\n]+"),
     UNKNOWN("UNKNOWN"),

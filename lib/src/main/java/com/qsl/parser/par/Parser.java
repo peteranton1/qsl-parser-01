@@ -3,22 +3,27 @@ package com.qsl.parser.par;
 import com.qsl.parser.lex.Lexer;
 import com.qsl.parser.lex.TokTyp;
 import com.qsl.parser.lex.Token;
-import com.qsl.parser.tree.*;
-import lombok.Builder;
+import com.qsl.parser.tree.MultiNode;
+import com.qsl.parser.tree.TerminalNode;
+import com.qsl.parser.tree.TreeNode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Builder
 @Getter
-@RequiredArgsConstructor
 @Slf4j
-public class Parser {
+public class Parser extends ParseBase {
 
-    private final Lexer lexer;
+    private final ParseVarStmt parseVarStmt;
+    private final ParseExecStmt parseExecStmt;
+
+    public Parser(Lexer lexer) {
+        super(lexer);
+        parseVarStmt = new ParseVarStmt(getLexer());
+        parseExecStmt = new ParseExecStmt(getLexer());
+    }
 
     public TreeNode prog() {
         return stmts();
@@ -46,127 +51,17 @@ public class Parser {
         Token tok = expect(stmtTypes);
         return switch (tok.toktyp()) {
             case VAR -> varStmt();
-            case EXEC -> execStmt(tok);
-            default -> throw handleError(tok);
+            case EXEC -> execStmt();
+            default -> throw handleError(tok, stmtTypes);
         };
     }
 
-    private TreeNode varStmt() {
-        eat();
-        Token identTok = expect(List.of(TokTyp.IDENT));
-        eat();
-        log.debug("varStmt: {}", identTok);
-        List<TreeNode> list = new ArrayList<>();
-        expect(List.of(TokTyp.LBRACE));
-        eat();
-        List<TokTyp> clauseList = List.of(
-            TokTyp.QT, TokTyp.ANS, TokTyp.RPAREN, TokTyp.RBRACE);
-        List<TokTyp> terminateList = List.of(TokTyp.RPAREN, TokTyp.RBRACE);
-        Token tok = expect(clauseList);
-        while (notInList(tok, terminateList)) {
-            list.add(varClause());
-            tok = expect(clauseList);
-        }
-        eat();
-        return MultiNode.builder()
-            .token(identTok)
-            .children(list)
-            .build();
+    public TreeNode varStmt() {
+        return parseVarStmt.varStmt();
     }
 
-    private TreeNode varClause() {
-        List<TokTyp> typList = List.of(TokTyp.QT, TokTyp.ANS);
-        Token clauseTok = expect(typList);
-        log.debug("varClause: {}", clauseTok);
-        eat();
-        if(TokTyp.QT.equals(clauseTok.toktyp())) {
-            Token stringTok = expect(List.of(TokTyp.STRING));
-            return stringExpr(clauseTok, stringTok);
-        } else if(TokTyp.ANS.equals(clauseTok.toktyp())) {
-            Token charTok = expect(List.of(TokTyp.CHAR));
-            return charExpr(charTok);
-        }
-        throw handleError(clauseTok);
+    public TreeNode execStmt() {
+        return parseExecStmt.execStmt();
     }
 
-    private TreeNode stringExpr(Token clauseTok, Token stringTok) {
-        eat();
-        return MultiNode.builder()
-            .token(clauseTok)
-            .children(List.of(TerminalNode.builder()
-                .token(stringTok).build()))
-            .build();
-    }
-
-    private TreeNode charExpr(Token charTok) {
-        log.debug("charExpr: {}", charTok);
-        eat();
-
-        List<TokTyp> typList = List.of(TokTyp.LPAREN,
-            TokTyp.QT, TokTyp.ANS, TokTyp.RBRACE);
-        Token tok = expect(typList);
-
-        if(!TokTyp.LPAREN.equals(tok.toktyp())) {
-            return TerminalNode.builder()
-                .token(charTok).build();
-        }
-
-        eat();
-        tok = expect(List.of(TokTyp.NUMBER,
-            TokTyp.COMMA, TokTyp.RPAREN));
-        List<TreeNode> numberList = new ArrayList<>();
-        while(!TokTyp.RPAREN.equals(tok.toktyp())) {
-            eat();
-            if(TokTyp.NUMBER.equals(tok.toktyp())) {
-                numberList.add(
-                    TerminalNode
-                        .builder()
-                        .token(tok)
-                        .build());
-            }
-            tok = expect(List.of(TokTyp.NUMBER,
-                TokTyp.COMMA, TokTyp.RPAREN));
-        }
-        eat();
-        return MultiNode.builder()
-            .token(charTok)
-            .children(numberList)
-            .build();
-    }
-
-    public TreeNode execStmt(Token stmtTok) {
-        log.debug("execStmt: {}", stmtTok);
-        expect(List.of(TokTyp.EXEC));
-        // Temporary
-        throw handleError(stmtTok);
-    }
-
-    private ParseException handleError(Token tok) {
-        lexer.scanToken();
-        String msg = String.format("Parse Error: %s, pos: %s",
-            tok, tok.pos());
-        log.error(msg);
-        return new ParseException(msg);
-    }
-
-    private Token expect(List<TokTyp> typList) {
-        Token tok = lexer.nextToken();
-        if (!typList.contains(tok.toktyp())) {
-            throw handleError(tok);
-        }
-        return tok;
-    }
-
-    private void eat() {
-        lexer.scanToken();
-    }
-
-    private boolean notInList(Token tok, List<TokTyp> typList) {
-        for(TokTyp tokTyp : typList) {
-            if(tok.toktyp().equals(tokTyp)) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

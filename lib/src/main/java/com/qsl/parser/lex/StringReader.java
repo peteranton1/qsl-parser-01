@@ -76,12 +76,18 @@ public class StringReader {
     }
 
     public Token getEofToken() {
-        return new Token(TokTyp.EOF,
-            TokTyp.EOF.getPattern().pattern(),
-            getPos());
+        return Token.builder()
+            .toktyp(TokTyp.EOF)
+            .literal(TokTyp.EOF.getPattern().pattern())
+            .pos(getPos())
+            .build();
     }
 
     public Pos getPos() {
-        return new Pos(pos, line, col);
+        return Pos.builder()
+            .pos(pos)
+            .line(line)
+            .col(col)
+            .build();
     }
 }
