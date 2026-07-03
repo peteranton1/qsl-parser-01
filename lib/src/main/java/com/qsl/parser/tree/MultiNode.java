@@ -13,4 +13,11 @@ import java.util.List;
 public final class MultiNode extends TreeNode {
     private Token token;
     private List<TreeNode> children;
+
+    @Override
+    public String toString() {
+        return "[" +
+            "=[" + children +
+            ']';
+    }
 }

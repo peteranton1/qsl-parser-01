@@ -28,11 +28,15 @@ public abstract class ParseBase {
     }
 
     protected Token expect(List<TokTyp> typList) {
-        Token tok = lexer.nextToken();
+        Token tok = nextToken();
         if (!typList.contains(tok.toktyp())) {
             throw handleError(tok, typList);
         }
         return tok;
+    }
+
+    protected Token nextToken() {
+        return lexer.nextToken();
     }
 
     protected void eat() {

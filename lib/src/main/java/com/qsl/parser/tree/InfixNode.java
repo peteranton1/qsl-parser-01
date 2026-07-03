@@ -8,11 +8,15 @@ import lombok.Getter;
 @Builder
 @Getter
 @AllArgsConstructor
-public final class TerminalNode extends TreeNode {
-    private Token token;
+public final class InfixNode extends TreeNode {
+    private Token op;
+    private TreeNode left;
+    private TreeNode right;
 
     @Override
     public String toString() {
-        return token.toString();
+        return "{" +
+            left + op + right +
+            '}';
     }
 }

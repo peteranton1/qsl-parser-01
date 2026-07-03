@@ -1,5 +1,5 @@
 package com.qsl.parser.tree;
 
 public sealed class TreeNode
-    permits MultiNode, TerminalNode {
+    permits InfixNode, MultiNode, TerminalNode {
 }
