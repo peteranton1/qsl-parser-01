@@ -41,6 +41,18 @@ public class ParserRunner {
         return toStringTokenList(tokens);
     }
 
+    private String toStringToken(Token token, int indent) {
+        StringBuilder sb = new StringBuilder();
+        String indentStr = " ";
+        if (indent > 1) {
+            indentStr = " ".repeat(indent);
+        }
+        sb.append(indentStr)
+            .append(token)
+            .append("\n");
+        return sb.toString();
+    }
+
     private String toStringTreeNode(TreeNode root, int indent) {
         StringBuilder sb = new StringBuilder();
         String indentStr = " ";
@@ -54,9 +66,14 @@ public class ParserRunner {
                     .append(multi.getToken())
                     .append("\n")
                 ;
-                for(TreeNode node: multi.getChildren()){
+                for (TreeNode node : multi.getChildren()) {
                     sb.append(toStringTreeNode(node, indent + 1));
                 }
+            }
+            case InfixNode infix -> {
+                sb.append(toStringTreeNode(infix.getLeft(), indent));
+                sb.append(toStringToken(infix.getToken(), indent));
+                sb.append(toStringTreeNode(infix.getRight(), indent));
             }
             case TerminalNode terminal -> sb
                 .append(indentStr)

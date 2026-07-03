@@ -26,7 +26,7 @@ public class ParseArithExpr extends ParseBase {
         TokTyp.DIV
     );
 
-    private static final List<TokTyp> EXPR_START = Arrays.asList(
+    private static final List<TokTyp> VALUE_EXPR = Arrays.asList(
         TokTyp.IDENT,
         TokTyp.NUMBER
     );
@@ -53,72 +53,54 @@ public class ParseArithExpr extends ParseBase {
     }
 
     private TreeNode parseSum() {
-        Token tok = expect(ARITH_TYPES);
-        if (tok.toktyp() == TokTyp.LPAREN) {
-            eat();
-            TreeNode resultNode = parseSum();
-            expect(List.of(TokTyp.RPAREN));
-            eat();
-            return resultNode;
-        } else if (EXPR_START.contains(tok.toktyp())) {
-            TreeNode prod1 = parseProduct();
-            tok = nextToken();
-            if (SUM_OPS.contains(tok.toktyp())) {
-                eat();
-                return InfixNode.builder()
-                    .left(prod1)
-                    .op(tok)
-                    .right(parseProduct())
-                    .build();
-            } else {
-                return prod1;
-            }
-        } else {
-            throw handleError(tok, EXPR_START);
+        TreeNode left = parseProduct();
+        Token tok = nextToken();
+        if (SUM_OPS.contains(tok.toktyp())) {
+            eat(); // consume + or -
+            TreeNode right = parseProduct();
+            return InfixNode.builder()
+                .token(tok)
+                .left(left)
+                .right(right)
+                .build();
         }
+        return left;
     }
 
     private TreeNode parseProduct() {
-        Token tok = expect(ARITH_TYPES);
-        if (tok.toktyp() == TokTyp.LPAREN) {
-            eat();
-            TreeNode resultNode = parseProduct();
-            expect(List.of(TokTyp.RPAREN));
-            eat();
-            return resultNode;
-        } else if (EXPR_START.contains(tok.toktyp())) {
-            TreeNode fac1 = parseFactor();
-            tok = nextToken();
-            if (PROD_OPS.contains(tok.toktyp())) {
-                eat();
-                return InfixNode.builder()
-                    .left(fac1)
-                    .op(tok)
-                    .right(parseFactor())
-                    .build();
-            } else {
-                return fac1;
-            }
-        } else {
-            throw handleError(tok, EXPR_START);
+        TreeNode left = parseFactor();
+        Token tok = nextToken();
+        if (PROD_OPS.contains(tok.toktyp())) {
+            eat(); // consume + or -
+            TreeNode right = parseFactor();
+            return InfixNode.builder()
+                .token(tok)
+                .left(left)
+                .right(right)
+                .build();
         }
+
+        return left;
     }
 
     private TreeNode parseFactor() {
         Token tok = expect(ARITH_TYPES);
-        if (tok.toktyp() == TokTyp.LPAREN) {
-            eat();
-            TreeNode resultNode = parseFactor();
+        // consume PAREN
+        if(TokTyp.LPAREN.equals(tok.toktyp())){
+            eat(); // consume (
+            TreeNode node = parseSum();
             expect(List.of(TokTyp.RPAREN));
             eat();
-            return resultNode;
-        } else if (EXPR_START.contains(tok.toktyp())) {
+            return node;
+        }
+        // consume IDENT or NUMBER
+        if(VALUE_EXPR.contains(tok.toktyp())){
             eat();
             return TerminalNode.builder()
                 .token(tok)
                 .build();
-        } else {
-            return parseSum();
         }
+
+        throw handleError(tok, VALUE_EXPR);
     }
 }

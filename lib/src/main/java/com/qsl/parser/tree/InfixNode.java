@@ -9,14 +9,14 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public final class InfixNode extends TreeNode {
-    private Token op;
+    private Token token;
     private TreeNode left;
     private TreeNode right;
 
     @Override
     public String toString() {
         return "{" +
-            left + op + right +
+            left + token + right +
             '}';
     }
 }
