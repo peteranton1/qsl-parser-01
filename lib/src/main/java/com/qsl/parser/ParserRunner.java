@@ -53,6 +53,29 @@ public class ParserRunner {
         return sb.toString();
     }
 
+    private int infixCalc(TreeNode node, int indent) {
+        int indentNext = indent;
+        if(node instanceof InfixNode){
+            indentNext++;
+        }
+        return indentNext;
+    }
+
+    private String toStringInfixNode(InfixNode infix, int indent) {
+        StringBuilder sb = new StringBuilder();
+        String indentStr = " ";
+        if (indent > 1) {
+            indentStr = " ".repeat(indent);
+        }
+        int indentLeft = infixCalc(infix.getLeft(), indent);
+        int indentRight = infixCalc(infix.getRight(), indent);
+
+        sb.append(toStringTreeNode(infix.getLeft(), indentLeft));
+        sb.append(toStringToken(infix.getToken(), indent));
+        sb.append(toStringTreeNode(infix.getRight(), indentRight));
+        return sb.toString();
+    }
+
     private String toStringTreeNode(TreeNode root, int indent) {
         StringBuilder sb = new StringBuilder();
         String indentStr = " ";
@@ -70,11 +93,9 @@ public class ParserRunner {
                     sb.append(toStringTreeNode(node, indent + 1));
                 }
             }
-            case InfixNode infix -> {
-                sb.append(toStringTreeNode(infix.getLeft(), indent));
-                sb.append(toStringToken(infix.getToken(), indent));
-                sb.append(toStringTreeNode(infix.getRight(), indent));
-            }
+            case InfixNode infix ->
+                sb.append(toStringInfixNode(infix, indent));
+
             case TerminalNode terminal -> sb
                 .append(indentStr)
                 .append(terminal.getToken())

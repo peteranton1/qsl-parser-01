@@ -74,9 +74,9 @@ Feature: Parse Various Compute expressions
        [COMP:comp]
         [NUMBER:6]
         [PLUS:+]
-        [NUMBER:7]
-        [PLUS:+]
-        [NUMBER:8]
+         [NUMBER:7]
+         [PLUS:+]
+         [NUMBER:8]
 
     """
 
@@ -96,9 +96,9 @@ Feature: Parse Various Compute expressions
        [COMP:comp]
         [NUMBER:7]
         [MULT:*]
-        [NUMBER:3]
-        [MULT:*]
-        [NUMBER:2]
+         [NUMBER:3]
+         [MULT:*]
+         [NUMBER:2]
 
     """
 
@@ -118,9 +118,9 @@ Feature: Parse Various Compute expressions
        [COMP:comp]
         [NUMBER:6]
         [PLUS:+]
-        [NUMBER:7]
-        [MULT:*]
-        [NUMBER:8]
+         [NUMBER:7]
+         [MULT:*]
+         [NUMBER:8]
 
     """
 
@@ -140,8 +140,8 @@ Feature: Parse Various Compute expressions
        [COMP:comp]
         [NUMBER:7]
         [MULT:*]
-        [NUMBER:3]
-        [PLUS:+]
-        [NUMBER:2]
+         [NUMBER:3]
+         [PLUS:+]
+         [NUMBER:2]
 
     """
