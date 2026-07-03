@@ -35,13 +35,13 @@ Feature: Parse Various inputs
        [COMP:comp]
         [NUMBER:5]
         [MULT:*]
-        [NUMBER:2]
-        [PLUS:+]
-        [NUMBER:7]
-        [DIV:/]
-        [NUMBER:1]
-        [MINUS:-]
-        [NUMBER:3]
+         [NUMBER:2]
+         [PLUS:+]
+          [NUMBER:7]
+          [DIV:/]
+           [NUMBER:1]
+           [MINUS:-]
+           [NUMBER:3]
 
     """
 

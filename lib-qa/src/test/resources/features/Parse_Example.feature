@@ -9,7 +9,7 @@ Feature: Parse Example inputs
       }
 
       var taxCalc {
-        comp (salary * 0.40)
+        comp (salary * 0.40 / 0.01 + 125.34 - 17)
       }
 
       exec (salary, taxCalc)
@@ -27,7 +27,13 @@ Feature: Parse Example inputs
        [COMP:comp]
         [IDENT:salary]
         [MULT:*]
-        [NUMBER:0.40]
+         [NUMBER:0.40]
+         [DIV:/]
+          [NUMBER:0.01]
+          [PLUS:+]
+           [NUMBER:125.34]
+           [MINUS:-]
+           [NUMBER:17]
       [EXEC:exec]
        [IDENT:exec0001]
        [IDENT:salary]
