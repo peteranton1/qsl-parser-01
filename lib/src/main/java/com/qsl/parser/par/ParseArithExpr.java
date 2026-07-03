@@ -57,7 +57,7 @@ public class ParseArithExpr extends ParseBase {
         Token tok = nextToken();
         if (SUM_OPS.contains(tok.toktyp())) {
             eat(); // consume + or -
-            TreeNode right = parseProduct();
+            TreeNode right = parseSum();
             return InfixNode.builder()
                 .token(tok)
                 .left(left)
@@ -72,7 +72,7 @@ public class ParseArithExpr extends ParseBase {
         Token tok = nextToken();
         if (PROD_OPS.contains(tok.toktyp())) {
             eat(); // consume + or -
-            TreeNode right = parseFactor();
+            TreeNode right = parseSum();
             return InfixNode.builder()
                 .token(tok)
                 .left(left)
