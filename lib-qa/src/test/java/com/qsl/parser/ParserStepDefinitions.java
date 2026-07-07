@@ -1,5 +1,6 @@
 package com.qsl.parser;
 
+import io.cucumber.java.PendingException;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -35,5 +36,11 @@ public class ParserStepDefinitions {
         world.log("Actual:\n " + world.actual);
         world.log("Expected:\n " + world.expected);
         Assertions.assertEquals(expected, world.actual);
+    }
+
+    @When("I submit the content to the lexer")
+    public void iSubmitTheContentToTheLexer() {
+        world.log("iSubmitTheContentToTheLexer " + ++world.dummyInt);
+        world.actual = underTest.runLexer(world.content);
     }
 }

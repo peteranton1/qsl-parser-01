@@ -1,4 +1,4 @@
-package com.qsl.parser.par;
+package com.qsl.parser.tree;
 
 public class ParseException  extends RuntimeException {
     public ParseException(String message) {

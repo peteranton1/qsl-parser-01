@@ -20,10 +20,10 @@ public class ParseArithExpr extends ParseBase {
         TokTyp.RPAREN,
         TokTyp.IDENT,
         TokTyp.NUMBER,
-        TokTyp.PLUS,
-        TokTyp.MINUS,
-        TokTyp.MULT,
-        TokTyp.DIV
+        TokTyp.SUM_PLUS,
+        TokTyp.SUM_MINUS,
+        TokTyp.SUM_MULT,
+        TokTyp.SUM_DIV
     );
 
     private static final List<TokTyp> VALUE_EXPR = Arrays.asList(
@@ -32,17 +32,20 @@ public class ParseArithExpr extends ParseBase {
     );
 
     private static final List<TokTyp> SUM_OPS = Arrays.asList(
-        TokTyp.PLUS,
-        TokTyp.MINUS
+        TokTyp.SUM_PLUS,
+        TokTyp.SUM_MINUS
     );
 
     private static final List<TokTyp> PROD_OPS = Arrays.asList(
-        TokTyp.MULT,
-        TokTyp.DIV
+        TokTyp.SUM_MULT,
+        TokTyp.SUM_DIV
     );
 
-    public ParseArithExpr(Lexer lexer) {
-        super(lexer);
+    private final ParseObjects base;
+
+    public ParseArithExpr(Lexer lexer, ParseObjects base) {
+        super(lexer, base);
+        this.base = base;
     }
 
     public TreeNode arithExpr(Token compTok) {

@@ -28,7 +28,7 @@ public class Lexer {
     private Token nonWhitespaceToken() {
         Token token = reader.nextToken();
         while (token != null &&
-            TokTyp.WHITESPACE.equals(token.toktyp())) {
+            (TokTyp.WHITESPACE.equals(token.toktyp()) )){
             token = reader.nextToken();
         }
         return token;

@@ -3,6 +3,7 @@ package com.qsl.parser.par;
 import com.qsl.parser.lex.Lexer;
 import com.qsl.parser.lex.TokTyp;
 import com.qsl.parser.lex.Token;
+import com.qsl.parser.tree.ParseException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,9 +14,11 @@ import java.util.List;
 public abstract class ParseBase {
 
     private final Lexer lexer;
+    protected ParseObjects base;
 
-    public ParseBase(Lexer lexer) {
+    public ParseBase(Lexer lexer, ParseObjects base) {
         this.lexer = lexer;
+        this.base = base;
     }
 
     protected ParseException handleError(Token tok, List<TokTyp> typList) {
@@ -51,5 +54,4 @@ public abstract class ParseBase {
         }
         return true;
     }
-
 }

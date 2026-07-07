@@ -17,9 +17,12 @@ public class ParserRunner {
     }
 
     public String runParser(String content) {
-        // temporary
         // return callLexer(content);
         return callParser(content);
+    }
+
+    public String runLexer(String content) {
+        return callLexer(content);
     }
 
     private String callParser(String content) {
@@ -32,7 +35,7 @@ public class ParserRunner {
     private String callLexer(String content) {
         Lexer lexer = new Lexer(content);
         List<Token> tokens = new ArrayList<>();
-        Token token = null;
+        Token token ;
         do {
             token = lexer.scanToken();
             tokens.add(token);

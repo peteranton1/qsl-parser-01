@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Objects;
 
 @Builder
 @Getter
@@ -16,8 +17,20 @@ public final class MultiNode extends TreeNode {
 
     @Override
     public String toString() {
-        return "[" +
-            "=[" + children +
+        return "['" + token +
+            "'=[" + children +
             ']';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        MultiNode multiNode = (MultiNode) o;
+        return Objects.equals(token, multiNode.token) && Objects.equals(children, multiNode.children);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(token, children);
     }
 }

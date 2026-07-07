@@ -4,6 +4,7 @@ import com.qsl.parser.lex.Lexer;
 import com.qsl.parser.lex.TokTyp;
 import com.qsl.parser.lex.Token;
 import com.qsl.parser.tree.MultiNode;
+import com.qsl.parser.tree.ParseException;
 import com.qsl.parser.tree.TerminalNode;
 import com.qsl.parser.tree.TreeNode;
 import lombok.extern.slf4j.Slf4j;
@@ -14,11 +15,8 @@ import java.util.List;
 @Slf4j
 public class ParseVarStmt extends ParseBase {
 
-    private final ParseArithExpr parseArithExpr;
-
-    public ParseVarStmt(Lexer lexer) {
-        super(lexer);
-        this.parseArithExpr = new ParseArithExpr(lexer);
+    public ParseVarStmt(Lexer lexer, ParseObjects base) {
+        super(lexer, base);
     }
 
     public TreeNode varStmt() {
@@ -67,7 +65,7 @@ public class ParseVarStmt extends ParseBase {
     }
 
     private TreeNode compExpr(Token compTok) {
-        return parseArithExpr.arithExpr(compTok);
+        return base.getArithExpr().arithExpr(compTok);
     }
 
     private TreeNode stringExpr(Token clauseTok, Token stringTok) {
