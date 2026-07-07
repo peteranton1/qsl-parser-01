@@ -13,13 +13,14 @@ import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
-public class ParseArithExpr extends ParseBase {
+public class ParseSumExpr extends ParseBase {
 
-    private static final List<TokTyp> ARITH_TYPES = Arrays.asList(
+    private static final List<TokTyp> SUM_TYPES = Arrays.asList(
         TokTyp.LPAREN,
         TokTyp.RPAREN,
         TokTyp.IDENT,
         TokTyp.NUMBER,
+        TokTyp.STRING,
         TokTyp.SUM_PLUS,
         TokTyp.SUM_MINUS,
         TokTyp.SUM_MULT,
@@ -28,7 +29,8 @@ public class ParseArithExpr extends ParseBase {
 
     private static final List<TokTyp> VALUE_EXPR = Arrays.asList(
         TokTyp.IDENT,
-        TokTyp.NUMBER
+        TokTyp.NUMBER,
+        TokTyp.STRING
     );
 
     private static final List<TokTyp> SUM_OPS = Arrays.asList(
@@ -43,12 +45,12 @@ public class ParseArithExpr extends ParseBase {
 
     private final ParseObjects base;
 
-    public ParseArithExpr(Lexer lexer, ParseObjects base) {
+    public ParseSumExpr(Lexer lexer, ParseObjects base) {
         super(lexer, base);
         this.base = base;
     }
 
-    public TreeNode arithExpr(Token compTok) {
+    public TreeNode sumExpr(Token compTok) {
         return MultiNode.builder()
             .token(compTok)
             .children(List.of(parseSum()))
@@ -58,36 +60,36 @@ public class ParseArithExpr extends ParseBase {
     private TreeNode parseSum() {
         TreeNode left = parseProduct();
         Token tok = nextToken();
-        if (SUM_OPS.contains(tok.toktyp())) {
-            eat(); // consume + or -
-            TreeNode right = parseSum();
-            return InfixNode.builder()
-                .token(tok)
-                .left(left)
-                .right(right)
-                .build();
+        if (!SUM_OPS.contains(tok.toktyp())) {
+            return left;
         }
-        return left;
+        eat(); // consume + or -
+        TreeNode right = parseSum();
+        return InfixNode.builder()
+            .token(tok)
+            .left(left)
+            .right(right)
+            .build();
     }
 
     private TreeNode parseProduct() {
         TreeNode left = parseFactor();
         Token tok = nextToken();
-        if (PROD_OPS.contains(tok.toktyp())) {
-            eat(); // consume + or -
-            TreeNode right = parseSum();
-            return InfixNode.builder()
-                .token(tok)
-                .left(left)
-                .right(right)
-                .build();
-        }
 
-        return left;
+        if (!PROD_OPS.contains(tok.toktyp())) {
+            return left;
+        }
+        eat(); // consume + or -
+        TreeNode right = parseSum();
+        return InfixNode.builder()
+            .token(tok)
+            .left(left)
+            .right(right)
+            .build();
     }
 
     private TreeNode parseFactor() {
-        Token tok = expect(ARITH_TYPES);
+        Token tok = expect(SUM_TYPES);
         // consume PAREN
         if(TokTyp.LPAREN.equals(tok.toktyp())){
             eat(); // consume (
@@ -96,7 +98,7 @@ public class ParseArithExpr extends ParseBase {
             eat();
             return node;
         }
-        // consume IDENT or NUMBER
+        // consume IDENT, NUMBER, STRING
         if(VALUE_EXPR.contains(tok.toktyp())){
             eat();
             return TerminalNode.builder()

@@ -65,7 +65,7 @@ public class ParseVarStmt extends ParseBase {
     }
 
     private TreeNode compExpr(Token compTok) {
-        return base.getArithExpr().arithExpr(compTok);
+        return base.getArithExpr().sumExpr(compTok);
     }
 
     private TreeNode stringExpr(Token clauseTok, Token stringTok) {
