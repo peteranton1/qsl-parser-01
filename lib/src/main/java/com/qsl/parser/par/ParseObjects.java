@@ -8,11 +8,11 @@ public class ParseObjects {
 
     private final ParseStmts stmts;
     private final ParseVarStmt varExpr;
-    private final ParseSumExpr arithExpr;
+    private final ParseSumExpr sumExpr;
 
     public ParseObjects(Lexer lexer) {
         stmts = new ParseStmts(lexer, this);
-        arithExpr = new ParseSumExpr(lexer, this);
+        sumExpr = new ParseSumExpr(lexer, this);
         varExpr = new ParseVarStmt(lexer, this);
     }
 }

@@ -56,7 +56,7 @@ public class ParseStmts extends ParseBase {
     }
 
     public TreeNode varStmt() {
-        return null;
+        return base.getVarExpr().varStmt();
     }
 
     public TreeNode fnStmt() {

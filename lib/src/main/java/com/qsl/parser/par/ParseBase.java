@@ -30,6 +30,12 @@ public abstract class ParseBase {
         return new ParseException(msg);
     }
 
+    protected ParseException parseException(Token tok) {
+        return new ParseException(
+            "Unexpected token: " + tok +
+                ", pos: " + tok.pos());
+    }
+
     protected Token expect(List<TokTyp> typList) {
         Token tok = nextToken();
         if (!typList.contains(tok.toktyp())) {

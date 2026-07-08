@@ -4,16 +4,21 @@ import com.qsl.parser.lex.Lexer;
 import com.qsl.parser.lex.TokTyp;
 import com.qsl.parser.lex.Token;
 import com.qsl.parser.tree.MultiNode;
-import com.qsl.parser.tree.ParseException;
 import com.qsl.parser.tree.TerminalNode;
 import com.qsl.parser.tree.TreeNode;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
 public class ParseVarStmt extends ParseBase {
+
+    private static final List<TokTyp> VAR_TYPES = Arrays.asList(
+        TokTyp.LBRACE,
+        TokTyp.ASSIGN
+    );
 
     public ParseVarStmt(Lexer lexer, ParseObjects base) {
         super(lexer, base);
@@ -24,8 +29,25 @@ public class ParseVarStmt extends ParseBase {
         Token identTok = expect(List.of(TokTyp.IDENT));
         eat();
         log.debug("varStmt: {}", identTok);
-        expect(List.of(TokTyp.LBRACE));
+        Token tok = expect(VAR_TYPES);
+        if(TokTyp.LBRACE.equals(tok.toktyp())) {
+            eat();
+            return varBraceBlock(identTok);
+        } else if (TokTyp.ASSIGN.equals(tok.toktyp())) {
+            return varAssignStmt(identTok);
+        }
+        throw parseException(tok);
+    }
+
+    private TreeNode varAssignStmt(Token identTok) {
         eat();
+        TreeNode expr = base.getSumExpr().sumExpr(identTok);
+        Token tok = expect(List.of(TokTyp.SEMICOLON));
+        eat();
+        return expr;
+    }
+
+    private MultiNode varBraceBlock(Token identTok) {
         List<TokTyp> clauseList = List.of(TokTyp.RBRACE,
             TokTyp.QT, TokTyp.ANS, TokTyp.COMP);
         List<TokTyp> terminateList = List.of(TokTyp.RBRACE);
@@ -45,27 +67,25 @@ public class ParseVarStmt extends ParseBase {
     private TreeNode varClause() {
         List<TokTyp> typList = List.of(
             TokTyp.QT, TokTyp.ANS, TokTyp.COMP);
-        Token clauseTok = expect(typList);
-        log.debug("varClause: {}", clauseTok);
+        Token tok = expect(typList);
+        log.debug("varClause: {}", tok);
         eat();
-        return switch (clauseTok.toktyp()) {
+        return switch (tok.toktyp()) {
             case QT -> {
                 Token stringTok = expect(List.of(TokTyp.STRING));
-                yield stringExpr(clauseTok, stringTok);
+                yield stringExpr(tok, stringTok);
             }
             case ANS -> {
                 Token charTok = expect(List.of(TokTyp.CHAR));
                 yield charExpr(charTok);
             }
-            case COMP -> compExpr(clauseTok);
-            default -> throw new ParseException(
-                "Unexpected token: " + clauseTok +
-                    ", pos: " +  clauseTok.pos());
+            case COMP -> compExpr(tok);
+            default -> throw parseException(tok);
         };
     }
 
     private TreeNode compExpr(Token compTok) {
-        return base.getArithExpr().sumExpr(compTok);
+        return base.getSumExpr().sumExpr(compTok);
     }
 
     private TreeNode stringExpr(Token clauseTok, Token stringTok) {

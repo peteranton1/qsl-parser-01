@@ -3,10 +3,7 @@ package com.qsl.parser.par;
 import com.qsl.parser.lex.Lexer;
 import com.qsl.parser.lex.TokTyp;
 import com.qsl.parser.lex.Token;
-import com.qsl.parser.tree.InfixNode;
-import com.qsl.parser.tree.MultiNode;
-import com.qsl.parser.tree.TerminalNode;
-import com.qsl.parser.tree.TreeNode;
+import com.qsl.parser.tree.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
@@ -20,6 +17,8 @@ public class ParseSumExpr extends ParseBase {
         TokTyp.RPAREN,
         TokTyp.IDENT,
         TokTyp.NUMBER,
+        TokTyp.STRING,
+        TokTyp.SEMICOLON,
         TokTyp.STRING,
         TokTyp.SUM_PLUS,
         TokTyp.SUM_MINUS,
@@ -51,15 +50,23 @@ public class ParseSumExpr extends ParseBase {
     }
 
     public TreeNode sumExpr(Token compTok) {
-        return MultiNode.builder()
+        return SumNode.builder()
             .token(compTok)
-            .children(List.of(parseSum()))
+            .args(parseSum())
             .build();
     }
 
+    private TreeNode parenSumExpr() {
+        eat(); // consume (
+        TreeNode node = parseSum();
+        expect(List.of(TokTyp.RPAREN));
+        eat();
+        return node;
+    }
+
     private TreeNode parseSum() {
-        TreeNode left = parseProduct();
         Token tok = nextToken();
+        TreeNode left = parseProduct();
         if (!SUM_OPS.contains(tok.toktyp())) {
             return left;
         }
@@ -92,15 +99,19 @@ public class ParseSumExpr extends ParseBase {
         Token tok = expect(SUM_TYPES);
         // consume PAREN
         if(TokTyp.LPAREN.equals(tok.toktyp())){
-            eat(); // consume (
-            TreeNode node = parseSum();
-            expect(List.of(TokTyp.RPAREN));
-            eat();
-            return node;
+            return parenSumExpr();
         }
         // consume IDENT, NUMBER, STRING
         if(VALUE_EXPR.contains(tok.toktyp())){
             eat();
+            Token next = nextToken();
+            if(TokTyp.IDENT.equals(tok.toktyp()) &&
+                TokTyp.LPAREN.equals(next.toktyp())){
+                return SumNode.builder()
+                    .token(tok)
+                    .args(parenSumExpr())
+                    .build();
+            }
             return TerminalNode.builder()
                 .token(tok)
                 .build();
