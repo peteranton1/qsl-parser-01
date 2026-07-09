@@ -30,11 +30,20 @@ Feature: QSL Definition Example
   Scenario: Temperature QSL Parser Example
     Given I parse the following content:
     """
-    var temp_c = 32.34 ;
-    var temp_f = temp_c * (9/5) + 32 ;
+    var temp_c1 = 11.11 ;
+    var temp_f1 = temp_c2 * (9/5) + 32 ;
     """
     When I submit the content to the parser
     Then I should see compiles to the following:
     """
-    [VAR:var]
+     [EOF:\[EOF\]]
+      [NUMBER:11.11]
+       [IDENT:temp_c2]
+       [SUM_MULT:*]
+        [NUMBER:9]
+        [SUM_DIV:/]
+        [NUMBER:5]
+      [SUM_PLUS:+]
+      [NUMBER:32]
+
     """

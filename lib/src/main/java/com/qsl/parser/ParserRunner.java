@@ -99,11 +99,16 @@ public class ParserRunner {
             case InfixNode infix ->
                 sb.append(toStringInfixNode(infix, indent));
 
+            case IdentNode ident -> sb
+                .append(indentStr)
+                .append(ident.getToken())
+                .append("\n");
+
             case TerminalNode terminal -> sb
                 .append(indentStr)
                 .append(terminal.getToken())
-                .append("\n")
-            ;
+                .append("\n");
+
             default -> throw
                 new IllegalStateException("Unexpected value: " + root);
         }
