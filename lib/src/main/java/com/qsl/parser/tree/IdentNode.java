@@ -10,7 +10,7 @@ import java.util.Objects;
 @Builder
 @Getter
 @AllArgsConstructor
-public final class SumNode extends TreeNode {
+public final class IdentNode extends TreeNode {
     private Token token;
     private TreeNode args;
 
@@ -23,8 +23,8 @@ public final class SumNode extends TreeNode {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        SumNode sumNode = (SumNode) o;
-        return Objects.equals(token, sumNode.token) && Objects.equals(args, sumNode.args);
+        IdentNode identNode = (IdentNode) o;
+        return Objects.equals(token, identNode.token) && Objects.equals(args, identNode.args);
     }
 
     @Override

@@ -57,17 +57,33 @@ public class ParseSumExpr extends ParseBase {
     }
 
     private TreeNode parseSum() {
-        Token tok = nextToken();
         TreeNode left = parseProduct();
-        // temp
-        return left;
+        Token tok = nextToken();
+        if(!SUM_OPS.contains(tok.toktyp())) {
+            return left;
+        }
+        eat();
+        TreeNode right = parseSum();
+        return buildInfixExpr(tok, left, right);
     }
 
     private TreeNode parseProduct() {
-        Token tok = nextToken();
         TreeNode left = parseFactor();
-        // temp
-        return left;
+        Token tok = nextToken();
+        if(!PROD_OPS.contains(tok.toktyp())) {
+            return left;
+        }
+        eat();
+        TreeNode right = parseSum();
+        return buildInfixExpr(tok, left, right);
+    }
+
+    private TreeNode buildInfixExpr(Token tok, TreeNode left, TreeNode right) {
+        return InfixNode.builder()
+            .token(tok)
+            .left(left)
+            .right(right)
+            .build();
     }
 
     private TreeNode parseFactor() {
@@ -83,7 +99,7 @@ public class ParseSumExpr extends ParseBase {
             if(TokTyp.LPAREN.equals(subToken.toktyp())) {
                 expr = parenExpr();
             }
-            return buildSumExpr(tok, expr);
+            return buildIdentExpr(tok, expr);
         }
         // STRING or NUMBER
         if(VALUE_EXPR.contains(tok.toktyp())) {
@@ -93,8 +109,8 @@ public class ParseSumExpr extends ParseBase {
         throw parseException(tok);
     }
 
-    private TreeNode buildSumExpr(Token tok, TreeNode expr) {
-        return SumNode.builder()
+    private TreeNode buildIdentExpr(Token tok, TreeNode expr) {
+        return IdentNode.builder()
             .token(tok)
             .args(expr)
             .build();
