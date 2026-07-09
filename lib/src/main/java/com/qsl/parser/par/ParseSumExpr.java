@@ -18,8 +18,6 @@ public class ParseSumExpr extends ParseBase {
         TokTyp.IDENT,
         TokTyp.NUMBER,
         TokTyp.STRING,
-        TokTyp.SEMICOLON,
-        TokTyp.STRING,
         TokTyp.SUM_PLUS,
         TokTyp.SUM_MINUS,
         TokTyp.SUM_MULT,
@@ -27,7 +25,6 @@ public class ParseSumExpr extends ParseBase {
     );
 
     private static final List<TokTyp> VALUE_EXPR = Arrays.asList(
-        TokTyp.IDENT,
         TokTyp.NUMBER,
         TokTyp.STRING
     );
@@ -49,74 +46,73 @@ public class ParseSumExpr extends ParseBase {
         this.base = base;
     }
 
-    public TreeNode sumExpr(Token compTok) {
-        return SumNode.builder()
-            .token(compTok)
-            .args(parseSum())
-            .build();
-    }
+    public TreeNode sumExpr(Token parentTok) {
+        // expect an arithmetic expression
+        // until there are no more arithmetic tokens
+        Token tok = expect(SUM_TYPES);
 
-    private TreeNode parenSumExpr() {
-        eat(); // consume (
-        TreeNode node = parseSum();
-        expect(List.of(TokTyp.RPAREN));
-        eat();
-        return node;
+        TreeNode expr = parseSum();
+
+        return expr;
     }
 
     private TreeNode parseSum() {
         Token tok = nextToken();
         TreeNode left = parseProduct();
-        if (!SUM_OPS.contains(tok.toktyp())) {
-            return left;
-        }
-        eat(); // consume + or -
-        TreeNode right = parseSum();
-        return InfixNode.builder()
-            .token(tok)
-            .left(left)
-            .right(right)
-            .build();
+        // temp
+        return left;
     }
 
     private TreeNode parseProduct() {
-        TreeNode left = parseFactor();
         Token tok = nextToken();
-
-        if (!PROD_OPS.contains(tok.toktyp())) {
-            return left;
-        }
-        eat(); // consume + or -
-        TreeNode right = parseSum();
-        return InfixNode.builder()
-            .token(tok)
-            .left(left)
-            .right(right)
-            .build();
+        TreeNode left = parseFactor();
+        // temp
+        return left;
     }
 
     private TreeNode parseFactor() {
-        Token tok = expect(SUM_TYPES);
-        // consume PAREN
-        if(TokTyp.LPAREN.equals(tok.toktyp())){
-            return parenSumExpr();
+        Token tok = nextToken();
+        if(TokTyp.LPAREN.equals(tok.toktyp())) {
+            return parenExpr();
         }
-        // consume IDENT, NUMBER, STRING
-        if(VALUE_EXPR.contains(tok.toktyp())){
-            eat();
-            Token next = nextToken();
-            if(TokTyp.IDENT.equals(tok.toktyp()) &&
-                TokTyp.LPAREN.equals(next.toktyp())){
-                return SumNode.builder()
-                    .token(tok)
-                    .args(parenSumExpr())
-                    .build();
+        TreeNode expr = null;
+        eat();
+        // IDENT check for name(expr)
+        if(TokTyp.IDENT.equals(tok.toktyp())) {
+            Token subToken = nextToken();
+            if(TokTyp.LPAREN.equals(subToken.toktyp())) {
+                expr = parenExpr();
             }
-            return TerminalNode.builder()
-                .token(tok)
-                .build();
+            return buildSumExpr(tok, expr);
         }
+        // STRING or NUMBER
+        if(VALUE_EXPR.contains(tok.toktyp())) {
+            return buildNumberExpr(tok);
+        }
+        // temp
+        throw parseException(tok);
+    }
 
-        throw handleError(tok, VALUE_EXPR);
+    private TreeNode buildSumExpr(Token tok, TreeNode expr) {
+        return SumNode.builder()
+            .token(tok)
+            .args(expr)
+            .build();
+    }
+
+    private TreeNode buildNumberExpr(Token tok) {
+        return TerminalNode.builder()
+            .token(tok)
+            .build();
+    }
+
+    private TreeNode parenExpr() {
+        eat();
+        TreeNode expr = parseSum();
+        Token tok = nextToken();
+        if(TokTyp.RPAREN.equals(tok.toktyp())) {
+            eat();
+        }
+        return expr;
     }
 }
