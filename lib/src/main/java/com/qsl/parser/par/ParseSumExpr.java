@@ -74,7 +74,7 @@ public class ParseSumExpr extends ParseBase {
             return left;
         }
         eat();
-        TreeNode right = parseSum();
+        TreeNode right = parseProduct();
         return buildInfixExpr(tok, left, right);
     }
 
