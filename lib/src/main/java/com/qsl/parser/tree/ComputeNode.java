@@ -10,25 +10,20 @@ import java.util.Objects;
 @Builder
 @Getter
 @AllArgsConstructor
-public final class IdentNode extends TreeNode {
+public final class ComputeNode extends TreeNode {
     private Token token;
     private TreeNode args;
 
     @Override
     public String toString() {
-        String s = "['" + token ;
-        if(args != null) {
-            return  s +
-                "'=[" + args + "]]";
-        } else {
-            return  s + "]";
-        }
+        return "['" + token +
+            "'=[" + args + "]]";
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        IdentNode identNode = (IdentNode) o;
+        ComputeNode identNode = (ComputeNode) o;
         return Objects.equals(token, identNode.token) && Objects.equals(args, identNode.args);
     }
 

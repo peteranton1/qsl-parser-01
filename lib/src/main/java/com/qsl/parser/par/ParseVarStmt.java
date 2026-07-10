@@ -3,9 +3,7 @@ package com.qsl.parser.par;
 import com.qsl.parser.lex.Lexer;
 import com.qsl.parser.lex.TokTyp;
 import com.qsl.parser.lex.Token;
-import com.qsl.parser.tree.MultiNode;
-import com.qsl.parser.tree.TerminalNode;
-import com.qsl.parser.tree.TreeNode;
+import com.qsl.parser.tree.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -30,13 +28,20 @@ public class ParseVarStmt extends ParseBase {
         eat();
         log.debug("varStmt: {}", identTok);
         Token tok = expect(VAR_TYPES);
+        TreeNode node = null;
         if(TokTyp.LBRACE.equals(tok.toktyp())) {
             eat();
-            return varBraceBlock(identTok);
+            node = varBraceBlock(identTok);
+            if(TokTyp.RBRACE.equals(nextToken().toktyp())) {
+                eat();
+            }
         } else if (TokTyp.ASSIGN.equals(tok.toktyp())) {
-            return varAssignStmt(identTok);
+            node = varAssignStmt(identTok);
         }
-        throw parseException(tok);
+        return AssignNode.builder()
+            .token(identTok)
+            .args(node)
+            .build();
     }
 
     private TreeNode varAssignStmt(Token identTok) {
@@ -47,7 +52,7 @@ public class ParseVarStmt extends ParseBase {
         return expr;
     }
 
-    private MultiNode varBraceBlock(Token identTok) {
+    private TreeNode varBraceBlock(Token identTok) {
         List<TokTyp> clauseList = List.of(TokTyp.RBRACE,
             TokTyp.QT, TokTyp.ANS, TokTyp.COMP);
         List<TokTyp> terminateList = List.of(TokTyp.RBRACE);
@@ -85,7 +90,11 @@ public class ParseVarStmt extends ParseBase {
     }
 
     private TreeNode compExpr(Token compTok) {
-        return base.getSumExpr().sumExpr(compTok);
+        TreeNode node = base.getSumExpr().sumExpr(compTok);
+        return ComputeNode.builder()
+            .token(compTok)
+            .args(node)
+            .build();
     }
 
     private TreeNode stringExpr(Token clauseTok, Token stringTok) {

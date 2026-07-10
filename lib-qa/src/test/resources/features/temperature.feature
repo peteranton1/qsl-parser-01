@@ -37,13 +37,17 @@ Feature: QSL Definition Example
     Then I should see compiles to the following:
     """
      [EOF:\[EOF\]]
-      [NUMBER:11.11]
-       [IDENT:temp_c2]
-       [SUM_MULT:*]
-        [NUMBER:9]
-        [SUM_DIV:/]
-        [NUMBER:5]
-      [SUM_PLUS:+]
-      [NUMBER:32]
+      VAR [IDENT:temp_c1]
+          [NUMBER:11.11]
+
+      VAR [IDENT:temp_f1]
+           [IDENT:temp_c2]
+        [SUM_MULT:*]
+         [NUMBER:9]
+         [SUM_DIV:/]
+         [NUMBER:5]
+       [SUM_PLUS:+]
+       [NUMBER:32]
+
 
     """

@@ -12,11 +12,13 @@ Feature: Parse Various inputs
   Then I should see compiles to the following:
     """
      [EOF:\[EOF\]]
-      [IDENT:q1]
-       [QT:qt]
-        [STRING:"Some Text"]
-       [CHAR:char]
-        [NUMBER:50]
+      VAR [IDENT:q1]
+          [IDENT:q1]
+        [QT:qt]
+         [STRING:"Some Text"]
+        [CHAR:char]
+         [NUMBER:50]
+
 
     """
 
@@ -31,17 +33,20 @@ Feature: Parse Various inputs
   Then I should see compiles to the following:
     """
      [EOF:\[EOF\]]
-      [IDENT:q1]
-       [COMP:comp]
-        [NUMBER:5]
-        [MULT:*]
-         [NUMBER:2]
-         [PLUS:+]
-          [NUMBER:7]
-          [DIV:/]
+      VAR [IDENT:q1]
+          [IDENT:q1]
+        COMP [COMP:comp]
+               [NUMBER:5]
+          [SUM_MULT:*]
+          [NUMBER:2]
+         [SUM_PLUS:+]
+           [NUMBER:7]
+           [SUM_DIV:/]
            [NUMBER:1]
-           [MINUS:-]
-           [NUMBER:3]
+          [SUM_MINUS:-]
+          [NUMBER:3]
+
+
 
     """
 

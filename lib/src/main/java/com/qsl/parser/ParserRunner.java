@@ -104,6 +104,26 @@ public class ParserRunner {
                 .append(ident.getToken())
                 .append("\n");
 
+            case AssignNode ident -> sb
+                .append(indentStr)
+                .append("VAR ")
+                .append(ident.getToken())
+                .append("\n")
+                .append(indentStr)
+                .append(" ")
+                .append(toStringTreeNode(ident.getArgs(), indent+ 1))
+                .append("\n");
+
+            case ComputeNode ident -> sb
+                .append(indentStr)
+                .append("COMP ")
+                .append(ident.getToken())
+                .append("\n")
+                .append(indentStr)
+                .append(" ")
+                .append(toStringTreeNode(ident.getArgs(), indent+ 1))
+                .append("\n");
+
             case TerminalNode terminal -> sb
                 .append(indentStr)
                 .append(terminal.getToken())
