@@ -49,11 +49,8 @@ public class ParseSumExpr extends ParseBase {
     public TreeNode sumExpr(Token parentTok) {
         // expect an arithmetic expression
         // until there are no more arithmetic tokens
-        Token tok = expect(SUM_TYPES);
-
-        TreeNode expr = parseSum();
-
-        return expr;
+        expect(SUM_TYPES);
+        return parseSum();
     }
 
     private TreeNode parseSum() {

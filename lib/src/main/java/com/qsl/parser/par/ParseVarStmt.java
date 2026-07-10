@@ -47,7 +47,7 @@ public class ParseVarStmt extends ParseBase {
     private TreeNode varAssignStmt(Token identTok) {
         eat();
         TreeNode expr = base.getSumExpr().sumExpr(identTok);
-        Token tok = expect(List.of(TokTyp.SEMICOLON));
+        expect(List.of(TokTyp.SEMICOLON));
         eat();
         return expr;
     }
