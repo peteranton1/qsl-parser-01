@@ -1,4 +1,4 @@
-Feature: Parse Various inputs
+Feature: Parse Var Questions
 
   Scenario: Parse var q1 entity input
   Given I parse the following content:
@@ -11,15 +11,14 @@ Feature: Parse Various inputs
   When I submit the content to the parser
   Then I should see compiles to the following:
     """
-     [EOF:\[EOF\]]
-      VAR [IDENT:q1]
-          [IDENT:q1]
-        [QT:qt]
-         [STRING:"Some Text"]
-        [CHAR:char]
-         [NUMBER:50]
 
-
+     Mul([EOF:\[EOF\]])
+      Agn([IDENT:q1])
+       Agn([QT:qt])
+        Ter([STRING:"Some Text"]).
+       Agn([ANS:ans])
+        Id([CHAR:char])
+         Ter([NUMBER:50]).
     """
 
   Scenario: Parse var comp entity input
@@ -32,43 +31,19 @@ Feature: Parse Various inputs
   When I submit the content to the parser
   Then I should see compiles to the following:
     """
-     [EOF:\[EOF\]]
-      VAR [IDENT:q1]
-          [IDENT:q1]
-        COMP [COMP:comp]
-               [NUMBER:5]
-          [SUM_MULT:*]
-          [NUMBER:2]
-         [SUM_PLUS:+]
-           [NUMBER:7]
-           [SUM_DIV:/]
-           [NUMBER:1]
-          [SUM_MINUS:-]
-          [NUMBER:3]
 
-
-
-    """
-
-  Scenario: Parse simple exec input
-  Given I parse the following content:
-  """
-      exec(q1, q2, q3)
-      exec(qMargin1)
-      """
-  When I submit the content to the parser
-  Then I should see compiles to the following:
-    """
-     [EOF:\[EOF\]]
-      [EXEC:exec]
-       [IDENT:exec0001]
-       [IDENT:q1]
-       [IDENT:q2]
-       [IDENT:q3]
-      [EXEC:exec]
-       [IDENT:exec0002]
-       [IDENT:qMargin1]
-
+     Mul([EOF:\[EOF\]])
+      Agn([IDENT:q1])
+       Agn([COMP:comp])
+        InF([SUM_PLUS:+])
+         InF([SUM_MULT:*])
+          Ter([NUMBER:5]).
+          Ter([NUMBER:2]).
+         InF([SUM_MINUS:-])
+          InF([SUM_DIV:/])
+           Ter([NUMBER:7]).
+           Ter([NUMBER:1]).
+          Ter([NUMBER:3]).
     """
 
 

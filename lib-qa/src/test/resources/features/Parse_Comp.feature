@@ -11,14 +11,11 @@ Feature: Parse Various Compute expressions
   When I submit the content to the parser
   Then I should see compiles to the following:
     """
-     [EOF:\[EOF\]]
-      VAR [IDENT:q1]
-          [IDENT:q1]
-        COMP [COMP:comp]
-              [NUMBER:5]
 
-
-
+     Mul([EOF:\[EOF\]])
+      Agn([IDENT:q1])
+       Agn([COMP:comp])
+        Ter([NUMBER:5]).
     """
 
   # ---------------------------------------------------
@@ -32,16 +29,13 @@ Feature: Parse Various Compute expressions
   When I submit the content to the parser
   Then I should see compiles to the following:
     """
-     [EOF:\[EOF\]]
-      VAR [IDENT:q1]
-          [IDENT:q1]
-        COMP [COMP:comp]
-              [NUMBER:6]
-         [SUM_PLUS:+]
-         [NUMBER:7]
 
-
-
+     Mul([EOF:\[EOF\]])
+      Agn([IDENT:q1])
+       Agn([COMP:comp])
+        InF([SUM_PLUS:+])
+         Ter([NUMBER:6]).
+         Ter([NUMBER:7]).
     """
 
   # ---------------------------------------------------
@@ -55,16 +49,13 @@ Feature: Parse Various Compute expressions
   When I submit the content to the parser
   Then I should see compiles to the following:
     """
-     [EOF:\[EOF\]]
-      VAR [IDENT:q1]
-          [IDENT:q1]
-        COMP [COMP:comp]
-              [NUMBER:7]
-         [SUM_MULT:*]
-         [NUMBER:3]
 
-
-
+     Mul([EOF:\[EOF\]])
+      Agn([IDENT:q1])
+       Agn([COMP:comp])
+        InF([SUM_MULT:*])
+         Ter([NUMBER:7]).
+         Ter([NUMBER:3]).
     """
 
   # ---------------------------------------------------
@@ -78,18 +69,15 @@ Feature: Parse Various Compute expressions
   When I submit the content to the parser
   Then I should see compiles to the following:
     """
-     [EOF:\[EOF\]]
-      VAR [IDENT:q1]
-          [IDENT:q1]
-        COMP [COMP:comp]
-              [NUMBER:6]
-         [SUM_PLUS:+]
-          [NUMBER:7]
-          [SUM_PLUS:+]
-           [NUMBER:8]
-           [SUM_MULT:*]
-           [NUMBER:9]
 
-
-
+     Mul([EOF:\[EOF\]])
+      Agn([IDENT:q1])
+       Agn([COMP:comp])
+        InF([SUM_PLUS:+])
+         Ter([NUMBER:6]).
+         InF([SUM_PLUS:+])
+          Ter([NUMBER:7]).
+          InF([SUM_MULT:*])
+           Ter([NUMBER:8]).
+           Ter([NUMBER:9]).
     """

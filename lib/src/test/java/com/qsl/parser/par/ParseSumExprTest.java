@@ -118,7 +118,7 @@ class ParseSumExprTest {
     private static void test1(String input, String expected) {
         Lexer lexer = new Lexer(input);
         ParseSumExpr underTest = new ParseSumExpr(lexer, null);
-        TreeNode actual = underTest.sumExpr(null);
+        TreeNode actual = underTest.sumExpr();
         Assertions.assertEquals(expected, actual.toString());
     }
 }

@@ -38,71 +38,65 @@ public class ParseVarStmt extends ParseBase {
         } else if (TokTyp.ASSIGN.equals(tok.toktyp())) {
             node = varAssignStmt(identTok);
         }
-        return AssignNode.builder()
-            .token(identTok)
-            .args(node)
-            .build();
+        return node;
     }
 
     private TreeNode varAssignStmt(Token identTok) {
         eat();
-        TreeNode expr = base.getSumExpr().sumExpr(identTok);
+        TreeNode expr = base.getSumExpr().sumExpr();
         expect(List.of(TokTyp.SEMICOLON));
         eat();
-        return expr;
+        return AssignNode.builder()
+            .token(identTok)
+            .children(List.of(expr))
+            .build();
     }
 
     private TreeNode varBraceBlock(Token identTok) {
         List<TokTyp> clauseList = List.of(TokTyp.RBRACE,
-            TokTyp.QT, TokTyp.ANS, TokTyp.COMP);
+            TokTyp.QT, TokTyp.ANS, TokTyp.COMP, TokTyp.SEMICOLON);
         List<TokTyp> terminateList = List.of(TokTyp.RBRACE);
         List<TreeNode> children = new ArrayList<>();
         Token tok = expect(clauseList);
         while (notInList(tok, terminateList)) {
-            children.add(varClause());
+            TreeNode maybeNode = varClause();
+            if(maybeNode != null) {
+                children.add(maybeNode);
+            }
             tok = expect(clauseList);
         }
         eat();
-        return MultiNode.builder()
+        return AssignNode.builder()
             .token(identTok)
             .children(children)
             .build();
     }
 
     private TreeNode varClause() {
-        List<TokTyp> typList = List.of(
+        List<TokTyp> typList = List.of(TokTyp.RBRACE,
             TokTyp.QT, TokTyp.ANS, TokTyp.COMP);
         Token tok = expect(typList);
+        if(TokTyp.RBRACE.equals(tok.toktyp())) {
+            return null;
+        }
         log.debug("varClause: {}", tok);
         eat();
-        return switch (tok.toktyp()) {
-            case QT -> {
-                Token stringTok = expect(List.of(TokTyp.STRING));
-                yield stringExpr(tok, stringTok);
-            }
-            case ANS -> {
-                Token charTok = expect(List.of(TokTyp.CHAR));
-                yield charExpr(charTok);
-            }
-            case COMP -> compExpr(tok);
+        TreeNode node = switch (tok.toktyp()) {
+            case ANS, QT, COMP -> compExpr(tok);
             default -> throw parseException(tok);
         };
+        tok = nextToken();
+        if(TokTyp.SEMICOLON.equals(tok.toktyp())) {
+            eat();
+        }
+        return node;
     }
 
     private TreeNode compExpr(Token compTok) {
-        TreeNode node = base.getSumExpr().sumExpr(compTok);
-        return ComputeNode.builder()
+        TreeNode expr = base.getSumExpr().sumExpr();
+        return AssignNode.builder()
             .token(compTok)
-            .args(node)
-            .build();
-    }
-
-    private TreeNode stringExpr(Token clauseTok, Token stringTok) {
-        eat();
-        return MultiNode.builder()
-            .token(clauseTok)
-            .children(List.of(TerminalNode.builder()
-                .token(stringTok).build()))
+            .children(List.of(expr))
             .build();
     }
 
@@ -136,7 +130,7 @@ public class ParseVarStmt extends ParseBase {
                 TokTyp.COMMA, TokTyp.RPAREN));
         }
         eat();
-        return MultiNode.builder()
+        return ComputeNode.builder()
             .token(charTok)
             .children(numberList)
             .build();

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.Objects;
 
 @Builder
@@ -12,23 +13,24 @@ import java.util.Objects;
 @AllArgsConstructor
 public final class AssignNode extends TreeNode {
     private Token token;
-    private TreeNode args;
+    private List<TreeNode> children;
 
     @Override
     public String toString() {
-        return "['" + token +
-            "'=[" + args + "]]";
+        return "[" + token +
+            ", =" + children +
+            "]";
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        AssignNode identNode = (AssignNode) o;
-        return Objects.equals(token, identNode.token) && Objects.equals(args, identNode.args);
+        AssignNode that = (AssignNode) o;
+        return Objects.equals(token, that.token) && Objects.equals(children, that.children);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(token, args);
+        return Objects.hash(token, children);
     }
 }

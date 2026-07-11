@@ -18,6 +18,9 @@ public class ParseSumExpr extends ParseBase {
         TokTyp.IDENT,
         TokTyp.NUMBER,
         TokTyp.STRING,
+        TokTyp.COMMA,
+        TokTyp.CHAR,
+        TokTyp.QUANTITY,
         TokTyp.SUM_PLUS,
         TokTyp.SUM_MINUS,
         TokTyp.SUM_MULT,
@@ -31,7 +34,8 @@ public class ParseSumExpr extends ParseBase {
 
     private static final List<TokTyp> SUM_OPS = Arrays.asList(
         TokTyp.SUM_PLUS,
-        TokTyp.SUM_MINUS
+        TokTyp.SUM_MINUS,
+        TokTyp.COMMA
     );
 
     private static final List<TokTyp> PROD_OPS = Arrays.asList(
@@ -46,7 +50,7 @@ public class ParseSumExpr extends ParseBase {
         this.base = base;
     }
 
-    public TreeNode sumExpr(Token parentTok) {
+    public TreeNode sumExpr() {
         // expect an arithmetic expression
         // until there are no more arithmetic tokens
         expect(SUM_TYPES);
@@ -91,7 +95,8 @@ public class ParseSumExpr extends ParseBase {
         TreeNode expr = null;
         eat();
         // IDENT check for name(expr)
-        if(TokTyp.IDENT.equals(tok.toktyp())) {
+        List<TokTyp> identTypes = List.of(TokTyp.IDENT, TokTyp.CHAR, TokTyp.QUANTITY);
+        if(identTypes.contains(tok.toktyp())) {
             Token subToken = nextToken();
             if(TokTyp.LPAREN.equals(subToken.toktyp())) {
                 expr = parenExpr();

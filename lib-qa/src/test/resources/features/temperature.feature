@@ -23,7 +23,21 @@ Feature: QSL Definition Example
     When I submit the content to the lexer
     Then I should see compiles to the following:
     """
-    [VAR:var] [IDENT:temp_c] [ASSIGN:=] [NUMBER:32.34] [SEMICOLON:;] [FN:fn] [IDENT:convert_f] [LPAREN:(] [IDENT:temp] [RPAREN:)] [LBRACE:{] [RETURN:return] [IDENT:temp] [SUM_MULT:*] [LPAREN:(] [NUMBER:9] [SUM_DIV:/] [NUMBER:5] [RPAREN:)] [SUM_PLUS:+] [NUMBER:32] [SEMICOLON:;] [RBRACE:}] [VAR:var] [IDENT:display1] [LBRACE:{] [QT:qt] [STRING:"Input Temp C: "] [SUM_PLUS:+] [IDENT:temp_c] [SUM_PLUS:+] [STRING:", Output temp F: "] [IDENT:convert_f] [LPAREN:(] [IDENT:temp_c] [RPAREN:)] [SEMICOLON:;] [RBRACE:}] [SCRIPT:script] [LBRACE:{] [EXEC:exec] [IDENT:display1] [SEMICOLON:;] [RBRACE:}] [EOF:\[EOF\]]
+     [VAR:var] [IDENT:temp_c] [ASSIGN:=]
+     [NUMBER:32.34] [SEMICOLON:;] [FN:fn]
+     [IDENT:convert_f] [LPAREN:(] [IDENT:temp]
+     [RPAREN:)] [LBRACE:{] [RETURN:return]
+     [IDENT:temp] [SUM_MULT:*] [LPAREN:(]
+     [NUMBER:9] [SUM_DIV:/] [NUMBER:5]
+     [RPAREN:)] [SUM_PLUS:+] [NUMBER:32]
+     [SEMICOLON:;] [RBRACE:}] [VAR:var]
+     [IDENT:display1] [LBRACE:{] [QT:qt]
+     [STRING:"Input Temp C: "] [SUM_PLUS:+] [IDENT:temp_c]
+     [SUM_PLUS:+] [STRING:", Output temp F: "] [IDENT:convert_f]
+     [LPAREN:(] [IDENT:temp_c] [RPAREN:)]
+     [SEMICOLON:;] [RBRACE:}] [SCRIPT:script]
+     [LBRACE:{] [EXEC:exec] [IDENT:display1]
+     [SEMICOLON:;] [RBRACE:}] [EOF:\[EOF\]]
     """
 
   # ---------------------------------------------------
@@ -36,18 +50,45 @@ Feature: QSL Definition Example
     When I submit the content to the parser
     Then I should see compiles to the following:
     """
-     [EOF:\[EOF\]]
-      VAR [IDENT:temp_c1]
-          [NUMBER:11.11]
 
-      VAR [IDENT:temp_f1]
-           [IDENT:temp_c2]
-        [SUM_MULT:*]
-         [NUMBER:9]
-         [SUM_DIV:/]
-         [NUMBER:5]
-       [SUM_PLUS:+]
-       [NUMBER:32]
+     Mul([EOF:\[EOF\]])
+      Agn([IDENT:temp_c1])
+       Ter([NUMBER:11.11]).
+      Agn([IDENT:temp_f1])
+       InF([SUM_PLUS:+])
+        InF([SUM_MULT:*])
+         Id([IDENT:temp_c2])
+         InF([SUM_DIV:/])
+          Ter([NUMBER:9]).
+          Ter([NUMBER:5]).
+        Ter([NUMBER:32]).
+    """
 
+  # ---------------------------------------------------
+  Scenario: Temperature complex qt expressions
+    Given I parse the following content:
+    """
+    var temp_c = 17;
+    var display1 {
+      qt "Input Temp C: " + temp_c +
+          ", Output temp F: " + convert_f(temp_c) ;
+    }
+    """
+    When I submit the content to the parser
+    Then I should see compiles to the following:
+    """
 
+     Mul([EOF:\[EOF\]])
+      Agn([IDENT:temp_c])
+       Ter([NUMBER:17]).
+      Agn([IDENT:display1])
+       Agn([QT:qt])
+        InF([SUM_PLUS:+])
+         Ter([STRING:"Input Temp C: "]).
+         InF([SUM_PLUS:+])
+          Id([IDENT:temp_c])
+          InF([SUM_PLUS:+])
+           Ter([STRING:", Output temp F: "]).
+           Id([IDENT:convert_f])
+            Id([IDENT:temp_c])
     """
