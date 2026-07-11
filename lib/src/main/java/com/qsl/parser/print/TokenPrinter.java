@@ -1,4 +1,4 @@
-package com.qsl.parser.tree;
+package com.qsl.parser.print;
 
 import com.qsl.parser.lex.Token;
 

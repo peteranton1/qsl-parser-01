@@ -1,4 +1,4 @@
-package com.qsl.parser.tree;
+package com.qsl.parser.print;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

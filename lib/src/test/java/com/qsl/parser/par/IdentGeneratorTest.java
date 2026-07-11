@@ -1,6 +1,6 @@
 package com.qsl.parser.par;
 
-import com.qsl.parser.tree.IdentGenerator;
+import com.qsl.parser.print.IdentGenerator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

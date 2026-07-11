@@ -1,4 +1,6 @@
-package com.qsl.parser.tree;
+package com.qsl.parser.print;
+
+import com.qsl.parser.tree.*;
 
 import java.util.List;
 
@@ -29,11 +31,11 @@ public class TreePrinter {
         String name = switch (node) {
             case AssignNode _ -> "Agn";
             case ComputeNode _ -> "Com";
+            case ExecNode _ -> "Exe";
             case IdentNode _ -> "Id";
             case InfixNode _ -> "InF";
             case MultiNode _ -> "Mul";
             case ScriptNode _ -> "Scr";
-            case ExecNode _ -> "Exe";
             case TerminalNode _ -> "Ter";
         };
 

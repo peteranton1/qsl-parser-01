@@ -3,7 +3,7 @@ package com.qsl.parser.par;
 import com.qsl.parser.lex.Lexer;
 import com.qsl.parser.lex.TokTyp;
 import com.qsl.parser.lex.Token;
-import com.qsl.parser.tree.ParseException;
+import com.qsl.parser.print.ParseException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
