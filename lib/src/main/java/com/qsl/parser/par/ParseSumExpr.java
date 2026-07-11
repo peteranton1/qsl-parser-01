@@ -109,9 +109,6 @@ public class ParseSumExpr extends ParseBase {
         if(VALUE_EXPR.contains(tok.toktyp())) {
             return buildNumberExpr(tok);
         }
-        if(VALUE_EXPR.contains(tok.toktyp())) {
-            return buildNumberExpr(tok);
-        }
         // temp
         throw parseException(tok);
     }
