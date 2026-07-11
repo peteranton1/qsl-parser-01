@@ -69,6 +69,7 @@ Feature: QSL Definition Example
     Given I parse the following content:
     """
     var temp_c = 17;
+    var temp_f { comp 64 ; }
     var display1 {
       qt "Input Temp C: " + temp_c +
           ", Output temp F: " + convert_f(temp_c) ;
@@ -81,6 +82,9 @@ Feature: QSL Definition Example
      Mul([EOF:\[EOF\]])
       Agn([IDENT:temp_c])
        Ter([NUMBER:17]).
+      Agn([IDENT:temp_f])
+       Agn([COMP:comp])
+        Ter([NUMBER:64]).
       Agn([IDENT:display1])
        Agn([QT:qt])
         InF([SUM_PLUS:+])
