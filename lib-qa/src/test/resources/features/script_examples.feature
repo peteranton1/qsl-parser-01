@@ -55,7 +55,7 @@ Feature: Script Definition Example
 
      Mul([EOF:\[EOF\]])
       Scr([IDENT:a1])
-       Exe([EXEC:exec])
+       Blo([EXEC:exec])
         Exe([EXEC:exec])
          Id([IDENT:q1])
          Id([IDENT:q2])
@@ -68,11 +68,11 @@ Feature: Script Definition Example
         Exe([EXEC:exec])
          Id([IDENT:q6])
       Scr([IDENT:a2])
-       Exe([EXEC:exec])
+       Blo([EXEC:exec])
         Exe([EXEC:exec])
          Id([IDENT:something_very_long])
       Scr([IDENT:main])
-       Exe([EXEC:exec])
+       Blo([EXEC:exec])
         Exe([EXEC:exec])
          Id([IDENT:display1])
     """

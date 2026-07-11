@@ -3,10 +3,7 @@ package com.qsl.parser.par;
 import com.qsl.parser.lex.Lexer;
 import com.qsl.parser.lex.TokTyp;
 import com.qsl.parser.lex.Token;
-import com.qsl.parser.tree.AssignNode;
-import com.qsl.parser.tree.ExecNode;
-import com.qsl.parser.tree.ScriptNode;
-import com.qsl.parser.tree.TreeNode;
+import com.qsl.parser.tree.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -78,7 +75,7 @@ public class ParseScriptStmt extends ParseBase {
                 eat();
             }
         }
-        return ExecNode.builder()
+        return BlockNode.builder()
             .token(identTok)
             .children(children)
             .build();

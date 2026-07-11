@@ -39,7 +39,7 @@ Feature: Parse Example inputs
           Ter([NUMBER:125.34]).
           Ter([NUMBER:17]).
       Scr([IDENT:main])
-       Exe([EXEC:exec])
+       Blo([EXEC:exec])
         Exe([EXEC:exec])
          Id([IDENT:salary])
          Id([IDENT:taxCalc])

@@ -30,6 +30,7 @@ public class TreePrinter {
 
         String name = switch (node) {
             case AssignNode _ -> "Agn";
+            case BlockNode _ -> "Blo";
             case ComputeNode _ -> "Com";
             case ExecNode _ -> "Exe";
             case IdentNode _ -> "Id";
@@ -50,6 +51,8 @@ public class TreePrinter {
         switch (node) {
             case AssignNode assign ->
                 printChildren(assign.getChildren(), sb, indent, fmt);
+            case BlockNode block ->
+                printChildren(block.getChildren(), sb, indent, fmt);
             case ComputeNode compute ->
                 printChildren(compute.getChildren(), sb, indent, fmt);
             case ExecNode exec ->
