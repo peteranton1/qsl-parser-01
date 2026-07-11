@@ -32,6 +32,8 @@ public class TreePrinter {
             case IdentNode _ -> "Id";
             case InfixNode _ -> "InF";
             case MultiNode _ -> "Mul";
+            case ScriptNode _ -> "Scr";
+            case ExecNode _ -> "Exe";
             case TerminalNode _ -> "Ter";
         };
 
@@ -44,18 +46,22 @@ public class TreePrinter {
         ;
         // print children
         switch (node) {
-            case MultiNode multi ->
-                printChildren(multi.getChildren(), sb, indent, fmt);
-            case InfixNode infix -> {
-                sb.append(printOfType(infix.getLeft(), indent + 1, fmt));
-                sb.append(printOfType(infix.getRight(), indent + 1, fmt));
-            }
             case AssignNode assign ->
                 printChildren(assign.getChildren(), sb, indent, fmt);
             case ComputeNode compute ->
                 printChildren(compute.getChildren(), sb, indent, fmt);
+            case ExecNode exec ->
+                printChildren(exec.getChildren(), sb, indent, fmt);
             case IdentNode ident ->
-                sb.append(printOfType(ident.getArgs(), indent + 1, fmt));
+                sb.append(printOfType(ident.getExpr(), indent + 1, fmt));
+            case InfixNode infix -> {
+                sb.append(printOfType(infix.getLeft(), indent + 1, fmt));
+                sb.append(printOfType(infix.getRight(), indent + 1, fmt));
+            }
+            case MultiNode multi ->
+                printChildren(multi.getChildren(), sb, indent, fmt);
+            case ScriptNode script ->
+                printChildren(script.getChildren(), sb, indent, fmt);
             case TerminalNode _ -> sb.append(".");
         }
 

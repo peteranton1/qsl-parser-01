@@ -44,6 +44,15 @@ public abstract class ParseBase {
         return tok;
     }
 
+    protected Token match(List<TokTyp> typList) {
+        Token tok = nextToken();
+        if (!typList.contains(tok.toktyp())) {
+            throw handleError(tok, typList);
+        }
+        eat();
+        return tok;
+    }
+
     protected Token nextToken() {
         return lexer.nextToken();
     }

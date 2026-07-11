@@ -15,9 +15,8 @@ Feature: QSL Definition Example
           ", Output temp F: " convert_f(temp_c) ;
     }
 
-    script {
-        exec
-            display1;
+    script main {
+        exec display1;
     }
     """
     When I submit the content to the lexer
@@ -36,8 +35,9 @@ Feature: QSL Definition Example
      [SUM_PLUS:+] [STRING:", Output temp F: "] [IDENT:convert_f]
      [LPAREN:(] [IDENT:temp_c] [RPAREN:)]
      [SEMICOLON:;] [RBRACE:}] [SCRIPT:script]
-     [LBRACE:{] [EXEC:exec] [IDENT:display1]
-     [SEMICOLON:;] [RBRACE:}] [EOF:\[EOF\]]
+     [IDENT:main] [LBRACE:{] [EXEC:exec]
+     [IDENT:display1] [SEMICOLON:;] [RBRACE:}]
+     [EOF:\[EOF\]]
     """
 
   # ---------------------------------------------------

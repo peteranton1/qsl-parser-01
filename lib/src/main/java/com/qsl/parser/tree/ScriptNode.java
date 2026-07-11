@@ -11,30 +11,26 @@ import java.util.Objects;
 @Builder
 @Getter
 @AllArgsConstructor
-public final class IdentNode extends TreeNode {
+public final class ScriptNode extends TreeNode {
     private Token token;
-    private TreeNode expr;
+    private List<TreeNode> children;
 
     @Override
     public String toString() {
-        String s = "['" + token ;
-        if(expr != null) {
-            return  s +
-                "'=[" + expr + "]]";
-        } else {
-            return  s + "]";
-        }
+        return "['" + token +
+            "'=[" + children +
+            ']';
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        IdentNode identNode = (IdentNode) o;
-        return Objects.equals(token, identNode.token) && Objects.equals(expr, identNode.expr);
+        ScriptNode multiNode = (ScriptNode) o;
+        return Objects.equals(token, multiNode.token) && Objects.equals(children, multiNode.children);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(token, expr);
+        return Objects.hash(token, children);
     }
 }

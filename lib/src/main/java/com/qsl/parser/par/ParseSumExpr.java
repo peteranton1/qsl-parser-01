@@ -3,16 +3,18 @@ package com.qsl.parser.par;
 import com.qsl.parser.lex.Lexer;
 import com.qsl.parser.lex.TokTyp;
 import com.qsl.parser.lex.Token;
-import com.qsl.parser.tree.*;
+import com.qsl.parser.tree.IdentNode;
+import com.qsl.parser.tree.InfixNode;
+import com.qsl.parser.tree.TerminalNode;
+import com.qsl.parser.tree.TreeNode;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
 public class ParseSumExpr extends ParseBase {
 
-    private static final List<TokTyp> SUM_TYPES = Arrays.asList(
+    private static final List<TokTyp> SUM_TYPES = List.of(
         TokTyp.LPAREN,
         TokTyp.RPAREN,
         TokTyp.IDENT,
@@ -27,18 +29,18 @@ public class ParseSumExpr extends ParseBase {
         TokTyp.SUM_DIV
     );
 
-    private static final List<TokTyp> VALUE_EXPR = Arrays.asList(
+    private static final List<TokTyp> VALUE_EXPR = List.of(
         TokTyp.NUMBER,
         TokTyp.STRING
     );
 
-    private static final List<TokTyp> SUM_OPS = Arrays.asList(
+    private static final List<TokTyp> SUM_OPS = List.of(
         TokTyp.SUM_PLUS,
         TokTyp.SUM_MINUS,
         TokTyp.COMMA
     );
 
-    private static final List<TokTyp> PROD_OPS = Arrays.asList(
+    private static final List<TokTyp> PROD_OPS = List.of(
         TokTyp.SUM_MULT,
         TokTyp.SUM_DIV
     );
@@ -107,6 +109,9 @@ public class ParseSumExpr extends ParseBase {
         if(VALUE_EXPR.contains(tok.toktyp())) {
             return buildNumberExpr(tok);
         }
+        if(VALUE_EXPR.contains(tok.toktyp())) {
+            return buildNumberExpr(tok);
+        }
         // temp
         throw parseException(tok);
     }
@@ -114,7 +119,7 @@ public class ParseSumExpr extends ParseBase {
     private TreeNode buildIdentExpr(Token tok, TreeNode expr) {
         return IdentNode.builder()
             .token(tok)
-            .args(expr)
+            .expr(expr)
             .build();
     }
 

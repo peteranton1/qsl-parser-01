@@ -59,19 +59,22 @@ public class ParseStmts extends ParseBase {
         return base.getVarExpr().varStmt();
     }
 
-    public TreeNode fnStmt() {
-        return null;
+    public TreeNode scriptStmt() {
+        return base.getScriptStmt().scriptStmt();
     }
 
-    public TreeNode scriptStmt() {
+    public TreeNode fnStmt() {
+        eat();// temp avoid infinite loop
         return null;
     }
 
     public TreeNode ifStmt() {
+        eat();// temp avoid infinite loop
         return null;
     }
 
     public TreeNode whileStmt() {
+        eat();// temp avoid infinite loop
         return null;
     }
 }
