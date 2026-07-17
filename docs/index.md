@@ -12,3 +12,4 @@ for that output.
 ### Links
 
 * [Definition of QSL](qsl_definition.md)
+* [Writing Java](java_generation.md)

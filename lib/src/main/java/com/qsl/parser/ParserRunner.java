@@ -24,16 +24,22 @@ public class ParserRunner {
         return callParser(content);
     }
 
+
+
     public String runLexer(String content) {
         return callLexer(content);
     }
 
     private String callParser(String content) {
+        TreeNode root = getTreeNode(content);
+        TreePrinter treePrinter = new TreePrinter();
+        return treePrinter.printTree(root, Fmt.NL);
+    }
+
+    public TreeNode getTreeNode(String content) {
         Lexer lexer = new Lexer(content);
         Parser parser = new Parser(lexer);
-        TreePrinter treePrinter = new TreePrinter();
-        TreeNode root = parser.prog();
-        return treePrinter.printTree(root, Fmt.NL);
+        return parser.prog();
     }
 
     private String callLexer(String content) {
